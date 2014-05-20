@@ -31,4 +31,9 @@ public class MemoryTest {
         assertEquals(0x0, memory.read(0x100));
     }
 
+    @Test(expected = Memory.InvalidAddress.class)
+    public void whenInvalidAddressEntered_ShouldThrowInvalidAddress() {
+        memory.read(0x1001);
+    }
+
 }
