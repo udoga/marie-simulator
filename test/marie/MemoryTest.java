@@ -9,30 +9,30 @@ public class MemoryTest {
     Memory memory;
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         memory = new Memory(0x1000);
     }
 
     @Test
-    public void data_ShouldBeEmptyBeforeWrite() {
+    public void dataIsEmptyBeforeWrite() {
         assertEquals(0x0, memory.read(0x100));
     }
 
     @Test
-    public void readingData_ShouldBeSameAsWritten() {
+    public void readingDataIsTheSameAsWritten() {
         memory.write(0x100, 0xFFF);
         assertEquals(0XFFF, memory.read(0x100));
     }
 
     @Test
-    public void writtenCell_ShouldBeEmptyAfterReset() {
+    public void writtenCellIsEmptyAfterReset() {
         memory.write(0x100, 0xFFF);
         memory.reset();
         assertEquals(0x0, memory.read(0x100));
     }
 
     @Test(expected = Memory.InvalidAddress.class)
-    public void whenInvalidAddressEntered_ShouldThrowInvalidAddress() {
+    public void ThrowInvalidAddressWhenInvalidAddressEntered() {
         memory.read(0x1001);
     }
 
