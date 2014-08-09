@@ -1,6 +1,5 @@
 package marie;
 
-import org.junit.Before;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
@@ -9,23 +8,18 @@ public class InstructionTest {
 
     Instruction instruction;
 
-    @Before
-    public void setUp() throws Exception {
-        String[] terms = {"abc", "123"};
-        instruction = new Instruction(terms);
+    @Test
+    public void testInitialize() throws Exception {
+        instruction = new Instruction("Halt");
+        assertEquals("Instruction(Symbol: Halt)", instruction.toString());
+        instruction = new Instruction("Load", "100");
+        assertEquals("Instruction(Symbol: Load, Address: 100)", instruction.toString());
+        instruction = new Instruction("Dec", "20");
+        instruction.setLabel("X");
+        assertEquals("Instruction(Label: X, Symbol: Dec, Address: 20)", instruction.toString());
+        instruction = new Instruction("Load");
+        instruction.setAddressLabel("X");
+        assertEquals("Instruction(Symbol: Load, Address Label: X)", instruction.toString());
     }
 
-    @Test
-    public void testConversionToString() {
-        assertEquals("0-[abc, 123]", instruction.toString());
-        instruction.setMemoryLocation(1);
-        assertEquals("1-[abc, 123]", instruction.toString());
-    }
-
-    @Test
-    public void testLabelInstructions() throws Exception {
-        String[] terms = {"etiket:", "dec", "20"};
-        instruction = new Instruction(terms);
-        assertTrue(instruction.isLabelInstruction());
-    }
 }

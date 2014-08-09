@@ -1,87 +1,38 @@
 package marie;
 
-import java.util.Arrays;
-
 public class Instruction {
 
-    private static final String[] symbols =
-        {"jns", "load", "store", "add", "subt", "input", "output",
-         "halt","skipcond", "jump", "clear", "addi", "jumpi"};
+    private String symbol;
+    private String address;
 
-    String[] terms;
-    private int memoryLocation;
+    private String label;
+    private String addressLabel;
 
-    public Instruction(String[] terms) {
-        this.terms = terms;
+    public Instruction(String symbol) {
+        this.symbol = symbol;
+    }
+
+    public Instruction(String symbol, String address) {
+        this.symbol = symbol;
+        this.address = address;
+    }
+
+    public void setLabel(String label) {
+        this.label = label;
+    }
+
+    public void setAddressLabel(String addressLabel) {
+        this.addressLabel = addressLabel;
     }
 
     public String toString() {
-        return memoryLocation + "-" + Arrays.toString(terms);
+        String labelInfo = (label == null)? "" : (", Label: " + label);
+        String symbolInfo = (symbol == null)? "" : (", Symbol: " + symbol);
+        String addressInfo = (address == null)? "" : (", Address: " + address);
+        String addressLabelInfo = (addressLabel == null)? "" : (", Address Label: " + addressLabel);
+
+        String info = (labelInfo + symbolInfo + addressInfo + addressLabelInfo).substring(2);
+        return "Instruction(" + info + ")";
     }
 
-    public int getMemoryLocation() {
-        return memoryLocation;
-    }
-
-    public void setMemoryLocation(int memoryLocation) {
-        this.memoryLocation = memoryLocation;
-    }
-
-    public boolean isEndInstruction() {
-        return terms[0].equals("end");
-    }
-
-    public boolean isOrgInstruction() {
-        return terms[0].equals("org");
-    }
-
-    public int getAddress() {
-        return Integer.parseInt(terms[1], 16);
-    }
-
-    public boolean isLabelInstruction() {
-        return terms[0].matches("[a-z]\\w*:");
-    }
-
-    public String getLabel() {
-        return terms[0].split(":")[0];
-    }
-
-    public void removeLabelPart() {
-        terms = Arrays.copyOfRange(terms, 1, terms.length);
-    }
-
-    public boolean containsAddressLabel() {
-        return (terms.length > 1) && terms[1].matches("[a-z]\\w*");
-    }
-
-    public String getAddressLabel() {
-        return terms[1];
-    }
-
-    public void setAddress(Integer address) {
-        terms[1] = String.format("%03x", address);
-    }
-
-    public int toHexCode() {
-        if (terms[0].equals("dec"))
-            return Integer.parseInt(terms[1], 10);
-        else if (terms[0].equals("hex"))
-            return Integer.parseInt(terms[1], 16);
-        else {
-            String address = (terms.length > 1) ? terms[1] : "000";
-            return Integer.parseInt(getOpcode() + address, 16);
-        }
-    }
-
-    private String getOpcode() {
-        for (int i = 0; i < symbols.length; i++) {
-            if (symbols[i].equals(terms[0]))
-                return Integer.toHexString(i);
-        }
-        throw new SymbolNotFound();
-    }
-
-    private class SymbolNotFound extends RuntimeException {
-    }
 }
