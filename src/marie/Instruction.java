@@ -2,6 +2,7 @@ package marie;
 
 import java.util.Arrays;
 
+
 public class Instruction {
 
     private static final String mriSymbolRegex = "(jns)|(load)|(store)|(add)|(subt)|(jump)|(addi)|(jumpi)|(org)";
@@ -20,7 +21,6 @@ public class Instruction {
     private String label;
     private String addressLabel;
     private String data;
-
 
     public Instruction(String... instructionTokens) {
         analyze(instructionTokens);
