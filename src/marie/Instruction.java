@@ -26,6 +26,8 @@ public class Instruction {
     private String addressLabel;
     private String data;
 
+    public Integer memoryLocation;
+
     public Instruction(String... instructionTokens) {
         analyze(instructionTokens);
     }
@@ -124,6 +126,26 @@ public class Instruction {
             if (found == null) throw new LabelAddressNotFound();
             address = Integer.toHexString(found);
         }
+    }
+
+    public boolean isEnd() {
+        return symbol.equals("end");
+    }
+
+    public boolean isOrg() {
+        return symbol.equals("org");
+    }
+
+    public int getAddress() {
+        return Integer.parseInt(address, 16);
+    }
+
+    public boolean hasLabel() {
+        return (label != null);
+    }
+
+    public String getLabel() {
+        return label;
     }
 
     public class InvalidInstruction extends RuntimeException {
