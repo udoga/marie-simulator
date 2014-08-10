@@ -1,6 +1,7 @@
 package marie;
 
 import java.util.Arrays;
+import java.util.HashMap;
 
 
 public class Instruction {
@@ -15,6 +16,9 @@ public class Instruction {
     private static final String labelRegex = addressLabelRegex + ":";
     private static final String hexDataRegex = "[a-fA-F0-9]+";
     private static final String decDataRegex = "\\d+";
+
+    private static final String[] symbols = {"jns", "load", "store", "add", "subt",
+            "input", "output", "halt", "skipcond", "jump", "clear", "addi", "jumpi"};
 
     private String symbol;
     private String address;
@@ -91,7 +95,47 @@ public class Instruction {
         return "Instruction(" + info + ")";
     }
 
+    public int convertToHexCode() {
+        validateStatusForConversion();
+        if (symbol.equals("dec")) return Integer.parseInt(data);
+        if (symbol.equals("hex")) return Integer.parseInt(data, 16);
+        String addressPart = (symbol.matches(nonMriSymbolRegex))? "000" : address;
+        return Integer.parseInt(getOpcode() + addressPart, 16);
+    }
+
+        private void validateStatusForConversion() {
+            if (symbol.matches(mriSymbolRegex) && address == null)
+                throw new InvalidConversion();
+            if (symbol.matches("(org)|(end)"))
+                throw new InvalidConversion();
+        }
+
+        private String getOpcode() {
+            for (int i = 0; i < symbols.length; i++) {
+                if (symbols[i].equals(symbol))
+                    return Integer.toHexString(i);
+            }
+            throw new SymbolNotFound();
+        }
+
+    public void findAddressFromTable(HashMap<String, Integer> labelAddressTable) {
+        if (symbol.matches(mriSymbolRegex) && address == null) {
+            Integer found = labelAddressTable.get(addressLabel);
+            if (found == null) throw new LabelAddressNotFound();
+            address = Integer.toHexString(found);
+        }
+    }
+
     public class InvalidInstruction extends RuntimeException {
+    }
+
+    public class SymbolNotFound extends RuntimeException {
+    }
+
+    public class InvalidConversion extends RuntimeException {
+    }
+
+    public class LabelAddressNotFound extends RuntimeException {
     }
 
 }
