@@ -71,6 +71,7 @@ public class InstructionTest {
         assertEquals(0x7000, instruction.convertToHexCode());
         instruction = new Instruction("Load", "100");
         assertEquals(0x1100, instruction.convertToHexCode());
+        // TODO: ("Load", "20") hatali cevriliyor.
         instruction = new Instruction("Dec", "20");
         assertEquals(0x0014, instruction.convertToHexCode());
         instruction = new Instruction("Hex", "1A");

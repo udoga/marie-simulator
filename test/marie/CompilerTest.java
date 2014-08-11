@@ -6,6 +6,7 @@ import org.junit.rules.ExpectedException;
 
 import static org.junit.Assert.*;
 
+
 public class CompilerTest {
 
     Compiler compiler = new Compiler();
@@ -46,6 +47,13 @@ public class CompilerTest {
         compiler.compile(sourceCode);
     }
 
+/*    @Test
+    public void testDeneme() throws Exception {
+        String sourceCode = "Load X\nHalt\nX: Dec 20";
+        int[][] objectCode = {{0x0, 0x1002}, {0x1, 0x7000}, {0x2, 0x0014}};
+        assertArrayEquals(objectCode, compiler.compile(sourceCode));
+    }*/
+
     @Test
     public void testCompileErrorMessage_ShowsMultipleErrors() throws Exception {
         String expectedErrorMessage =
@@ -68,6 +76,7 @@ public class CompilerTest {
         String expectedErrorMessage =
                 "Line 2: instruction conversion error: undefined address label 'X'\n\n" +
                 "Line 3: instruction conversion error: undefined address label 'Y'";
+
         expectedEx.expect(Compiler.CompileError.class);
         expectedEx.expectMessage(expectedErrorMessage);
 

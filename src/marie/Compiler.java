@@ -3,13 +3,14 @@ package marie;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+
 public class Compiler {
 
     private Parser parser = new Parser();
     private Instruction[] instructions;
     private String errorMessage;
 
-    private HashMap<String, Integer> labelAddressTable = new HashMap<String, Integer>();
+    private HashMap<String, Integer> labelAddressTable;
 
     public int[][] compile(String sourceCode) {
         generateInstructions(sourceCode);
@@ -43,6 +44,7 @@ public class Compiler {
 
     private void processAddressAssignments() {
         int locationCounter = 0;
+        labelAddressTable = new HashMap<String, Integer>();
         for (Instruction instruction: instructions) {
             if (instruction.isEnd()) break;
             if (instruction.isOrg()) {
@@ -77,6 +79,20 @@ public class Compiler {
             }
             throwCompileErrorIfErrorsExist();
         }
+
+    public HashMap<String, Integer> getLabelAddressTable() {
+        return labelAddressTable;
+    }
+
+    public String[][] getLabelTableData(String[][] labelTableData) {
+        String[] labels = new String[labelAddressTable.size()];
+        labels = labelAddressTable.keySet().toArray(labels);
+        for (int i = 0; i < labels.length; i++) {
+            labelTableData[i][0] = labels[i];
+            labelTableData[i][1] = String.format("%03x", labelAddressTable.get(labels[i]));
+        }
+        return labelTableData;
+    }
 
     public class CompileError extends RuntimeException {
         public CompileError(String message) {

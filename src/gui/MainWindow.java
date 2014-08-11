@@ -1,34 +1,41 @@
+package gui;
+
 import javax.swing.*;
+
+import marie.Simulator;
 import net.miginfocom.swing.MigLayout;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.HashMap;
 
 import com.sun.java.swing.plaf.gtk.GTKLookAndFeel;
 
 public class MainWindow {
 
+    private JTextArea textArea;
     private JButton resetButton;
     private JButton uploadButton;
     private JButton runButton;
     private JButton runNextButton;
     private JLabel[] registerValues = new JLabel[6];
 
-    private int simulator;
+    private JTable memoryTable;
+    private String[][] memoryTableData;
+    private JTable labelTable;
+    private String[][] labelTableData;
 
-    public static void main(String[] args) {
-        new MainWindow(0);
-    }
+    private Simulator simulator;
 
-    MainWindow() {
+    public MainWindow() {
         createWindow();
     }
 
-    MainWindow(int simulator) {
+    public MainWindow(Simulator simulator) {
         this.simulator = simulator;
         createWindow();
-        enableActionListener();
+        enableActions();
     }
 
     private void createWindow() {
@@ -59,7 +66,7 @@ public class MainWindow {
 
             private JScrollPane createTextAreaScrollPanel() {
                 Font font = new Font(Font.MONOSPACED, Font.PLAIN, 12);
-                JTextArea textArea = new JTextArea();
+                textArea = new JTextArea();
                 textArea.setFont(font);
                 return new JScrollPane(textArea);
             }
@@ -81,21 +88,43 @@ public class MainWindow {
 
                 private JScrollPane createMemoryTable() {
                     String[] columnNames = {"Address", "Data"};
-                    String[][] memoryTableData = new String[4096][2];
-                    JTable memoryTable = new JTable(memoryTableData, columnNames);
+                    memoryTable = new JTable(createMemoryTableData(), columnNames);
+                    if (simulator != null) refreshMemoryTableData();
                     JScrollPane scrollPane = new JScrollPane(memoryTable);
                     scrollPane.setPreferredSize(new Dimension(150, 50));
                     return scrollPane;
                 }
 
+                    private String[][] createMemoryTableData() {
+                        memoryTableData = new String[4096][2];
+                        for (int i = 0; i < memoryTableData.length; i++)
+                            memoryTableData[i][0] = String.format("%03x", i).toUpperCase();
+                        return memoryTableData;
+                    }
+
+                    private void refreshMemoryTableData() {
+                        for (int i = 0; i < memoryTableData.length; i++)
+                            memoryTableData[i][1] = String.format("%04x", simulator.getMemory().read(i)).toUpperCase();
+                        memoryTable.repaint();
+                    }
+
                 private JScrollPane createLabelTable() {
                     String[] columnNames = {"Label", "Address"};
-                    String[][] labelTableData = new String[64][2];
-                    JTable labelTable = new JTable(labelTableData, columnNames);
+                    labelTable = new JTable(createLabelTableData(), columnNames);
                     JScrollPane scrollPane = new JScrollPane(labelTable);
                     scrollPane.setPreferredSize(new Dimension(150, 50));
                     return scrollPane;
                 }
+
+                    private String[][] createLabelTableData() {
+                        labelTableData = new String[64][2];
+                        return labelTableData;
+                    }
+
+                    private void refreshLabelTableData() {
+                        labelTableData = simulator.getCompiler().getLabelTableData(labelTableData);
+                        labelTable.repaint();
+                    }
 
             private JPanel createRegisterPanel() {
                 JPanel registerPanel = new JPanel(new MigLayout("flowy, wrap 7"));
@@ -141,7 +170,7 @@ public class MainWindow {
                     runNextButton = new JButton("Run Next Step");
                 }
 
-    private void enableActionListener() {
+    private void enableActions() {
         MarieSimulatorHandler handler = new MarieSimulatorHandler();
         resetButton.addActionListener(handler);
         uploadButton.addActionListener(handler);
@@ -156,12 +185,20 @@ public class MainWindow {
             if (e.getSource().equals(resetButton))
                 System.out.println("reset");
             else if (e.getSource().equals(uploadButton))
-                System.out.println("upload");
+                upload();
             else if (e.getSource().equals(runButton))
                 System.out.println("run");
             else if (e.getSource().equals(runNextButton))
                 System.out.println("run next");
         }
+
+        private void upload() {
+            String sourceCode = textArea.getText();
+            simulator.uploadProgram(sourceCode);
+            refreshMemoryTableData();
+            refreshLabelTableData();
+        }
+
 
     }
 
