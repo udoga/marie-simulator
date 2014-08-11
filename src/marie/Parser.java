@@ -1,6 +1,5 @@
 package marie;
 
-
 public class Parser {
 
     public String[][] getTokens(String sourceCode) {
@@ -18,13 +17,5 @@ public class Parser {
                 line = line.split(";")[0];
             return line;
         }
-
-    public Instruction[] generateInstructions(String sourceCode) {
-        String[][] tokens = getTokens(sourceCode);
-        Instruction[] instructions = new Instruction[tokens.length];
-        for (int i = 0; i < tokens.length; i++)
-            instructions[i] = new Instruction(tokens[i]);
-        return instructions;
-    }
 
 }

@@ -3,7 +3,6 @@ package marie;
 import java.util.Arrays;
 import java.util.HashMap;
 
-
 public class Instruction {
 
     private static final String mriSymbolRegex = "(jns)|(load)|(store)|(add)|(subt)|(jump)|(addi)|(jumpi)|(org)";

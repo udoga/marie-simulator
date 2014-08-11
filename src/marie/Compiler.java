@@ -1,6 +1,5 @@
 package marie;
 
-
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -29,18 +28,18 @@ public class Compiler {
         throwCompileErrorIfErrorsExist();
     }
 
-    private void addError(int lineNo, String message) {
-        String newErrorMessage = "Line " + lineNo + ": "  + message;
-        if (errorMessage == null)
-            errorMessage = newErrorMessage;
-        else
-            errorMessage += "\n\n" + newErrorMessage;
-    }
+        private void addError(int lineNo, String message) {
+            String newErrorMessage = "Line " + lineNo + ": "  + message;
+            if (errorMessage == null)
+                errorMessage = newErrorMessage;
+            else
+                errorMessage += "\n\n" + newErrorMessage;
+        }
 
-    private void throwCompileErrorIfErrorsExist() {
-        if (errorMessage != null)
-            throw new CompileError(errorMessage);
-    }
+        private void throwCompileErrorIfErrorsExist() {
+            if (errorMessage != null)
+                throw new CompileError(errorMessage);
+        }
 
     private void processAddressAssignments() {
         int locationCounter = 0;
@@ -68,16 +67,16 @@ public class Compiler {
         return objectCodeList.toArray(objectCode);
     }
 
-    private void findAndSetLabelsAddresses() {
-        for (int i = 0; i < instructions.length; i++) {
-            try {
-                instructions[i].findAddressFromTable(labelAddressTable);
-            } catch (Instruction.LabelAddressNotFound e) {
-                addError(i+1, "instruction conversion error: " + e.getMessage());
+        private void findAndSetLabelsAddresses() {
+            for (int i = 0; i < instructions.length; i++) {
+                try {
+                    instructions[i].findAddressFromTable(labelAddressTable);
+                } catch (Instruction.LabelAddressNotFound e) {
+                    addError(i+1, "instruction conversion error: " + e.getMessage());
+                }
             }
+            throwCompileErrorIfErrorsExist();
         }
-        throwCompileErrorIfErrorsExist();
-    }
 
     public class CompileError extends RuntimeException {
         public CompileError(String message) {

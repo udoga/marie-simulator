@@ -2,7 +2,6 @@ package marie;
 
 import java.util.HashMap;
 
-
 public class Memory {
 
     private int capacity;

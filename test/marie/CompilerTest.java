@@ -6,7 +6,6 @@ import org.junit.rules.ExpectedException;
 
 import static org.junit.Assert.*;
 
-
 public class CompilerTest {
 
     Compiler compiler = new Compiler();
@@ -66,10 +65,13 @@ public class CompilerTest {
 
     @Test
     public void testThrowsCompileError_WhenLabelAddressNotFound() throws Exception {
+        String expectedErrorMessage =
+                "Line 2: instruction conversion error: undefined address label 'X'\n\n" +
+                "Line 3: instruction conversion error: undefined address label 'Y'";
         expectedEx.expect(Compiler.CompileError.class);
-        expectedEx.expectMessage("Line 2: instruction conversion error: undefined address label 'X'");
+        expectedEx.expectMessage(expectedErrorMessage);
 
-        String sourceCode = "ORG 100\nLoad X\nHalt\nEND";
+        String sourceCode = "ORG 100\nLoad X\nAdd Y\nHalt\nEND";
         compiler.compile(sourceCode);
     }
 
