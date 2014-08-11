@@ -8,6 +8,7 @@ public class Compiler {
 
     private Parser parser = new Parser();
     private Instruction[] instructions;
+    private String errorMessage;
 
     private HashMap<String, Integer> labelAddressTable = new HashMap<String, Integer>();
 
@@ -23,12 +24,22 @@ public class Compiler {
         for (int i = 0; i < tokens.length; i++) {
             try { instructions[i] = new Instruction(tokens[i]); }
             catch (Instruction.InvalidInstruction e) {
-                addError(i, "error message"); }
+                addError(i+1, "invalid instruction error: " + e.getMessage()); }
         }
+        throwCompileErrorIfErrorsExist();
     }
 
     private void addError(int lineNo, String message) {
-        System.out.println("Error: " + lineNo + " - "  + message);
+        String newErrorMessage = "Line " + lineNo + ": "  + message;
+        if (errorMessage == null)
+            errorMessage = newErrorMessage;
+        else
+            errorMessage += "\n\n" + newErrorMessage;
+    }
+
+    private void throwCompileErrorIfErrorsExist() {
+        if (errorMessage != null)
+            throw new CompileError(errorMessage);
     }
 
     private void processAddressAssignments() {
@@ -62,8 +73,15 @@ public class Compiler {
             try {
                 instructions[i].findAddressFromTable(labelAddressTable);
             } catch (Instruction.LabelAddressNotFound e) {
-                addError(i, "error message");
+                addError(i+1, "instruction conversion error: " + e.getMessage());
             }
+        }
+        throwCompileErrorIfErrorsExist();
+    }
+
+    public class CompileError extends RuntimeException {
+        public CompileError(String message) {
+            super(message);
         }
     }
 

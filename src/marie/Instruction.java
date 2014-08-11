@@ -7,10 +7,10 @@ import java.util.HashMap;
 public class Instruction {
 
     private static final String mriSymbolRegex = "(jns)|(load)|(store)|(add)|(subt)|(jump)|(addi)|(jumpi)|(org)";
-    private static final String nonMriSymbolRegex = "(input)|(output)|(halt)|(skipcond)|(clear)|(end)";
+    private static final String rriSymbolRegex = "(input)|(output)|(halt)|(skipcond)|(clear)|(end)";
     private static final String dataSymbolRegex = "(hex)|(dec)";
 
-    private static final String symbolRegex = mriSymbolRegex + "|" + nonMriSymbolRegex + "|" + dataSymbolRegex;
+    private static final String symbolRegex = mriSymbolRegex + "|" + rriSymbolRegex + "|" + dataSymbolRegex;
     private static final String addressRegex = "([0-9][0-9a-fA-F]{0,2})|(0+[0-9a-fA-F]{0,3})";
     private static final String addressLabelRegex = "[a-zA-Z]\\w*";
     private static final String labelRegex = addressLabelRegex + ":";
@@ -34,7 +34,7 @@ public class Instruction {
 
     private void analyze(String[] instructionTokens) {
         if (instructionTokens.length == 0)
-            throw new InvalidInstruction();
+            throw new InvalidInstruction("empty instruction, no tokens found");
         instructionTokens = extractLabel(instructionTokens);
         findAndSetSymbol(instructionTokens);
         validateTokenCountBySymbolType(instructionTokens);
@@ -51,17 +51,19 @@ public class Instruction {
 
         private void findAndSetSymbol(String[] instructionTokens) {
             if (instructionTokens.length == 0)
-                throw new InvalidInstruction();
+                throw new InvalidInstruction("expected instruction symbol");
             if (!instructionTokens[0].toLowerCase().matches(symbolRegex))
-                throw new InvalidInstruction();
+                throw new InvalidInstruction("unknown symbol '" + instructionTokens[0] + "'");
             symbol = instructionTokens[0].toLowerCase();
         }
 
         private void validateTokenCountBySymbolType(String[] instructionTokens) {
             if (symbol.matches(mriSymbolRegex + "|" + dataSymbolRegex) && instructionTokens.length != 2)
-                throw new InvalidInstruction();
-            if (symbol.matches(nonMriSymbolRegex) && instructionTokens.length != 1)
-                throw new InvalidInstruction();
+                throw new InvalidInstruction("wrong token count, memory reference instruction" +
+                        " should consist of one symbol and one address");
+            if (symbol.matches(rriSymbolRegex) && instructionTokens.length != 1)
+                throw new InvalidInstruction("wrong token count, register reference instruction" +
+                        " should be only one symbol");
         }
 
         private void findAndSetAddress(String[] instructionTokens) {
@@ -70,7 +72,7 @@ public class Instruction {
                     address = instructionTokens[1];
                 else if (instructionTokens[1].matches(addressLabelRegex))
                     addressLabel = instructionTokens[1];
-                else throw new InvalidInstruction();
+                else throw new InvalidInstruction("invalid address or address label '" + instructionTokens[1] + "'");
             }
         }
 
@@ -82,7 +84,7 @@ public class Instruction {
                         (Integer.parseInt(instructionTokens[1]) <= 0xFFFF);
                 if (hexDataValid || decDataValid)
                     data = instructionTokens[1];
-                else throw new InvalidInstruction();
+                else throw new InvalidInstruction("invalid data");
             }
         }
 
@@ -101,7 +103,7 @@ public class Instruction {
         validateStatusForConversion();
         if (symbol.equals("dec")) return Integer.parseInt(data);
         if (symbol.equals("hex")) return Integer.parseInt(data, 16);
-        String addressPart = (symbol.matches(nonMriSymbolRegex))? "000" : address;
+        String addressPart = (symbol.matches(rriSymbolRegex))? "000" : address;
         return Integer.parseInt(getOpcode() + addressPart, 16);
     }
 
@@ -123,7 +125,7 @@ public class Instruction {
     public void findAddressFromTable(HashMap<String, Integer> labelAddressTable) {
         if (symbol.matches(mriSymbolRegex) && address == null) {
             Integer found = labelAddressTable.get(addressLabel);
-            if (found == null) throw new LabelAddressNotFound();
+            if (found == null) throw new LabelAddressNotFound("undefined address label '" + addressLabel + "'");
             address = Integer.toHexString(found);
         }
     }
@@ -149,6 +151,9 @@ public class Instruction {
     }
 
     public class InvalidInstruction extends RuntimeException {
+        public InvalidInstruction(String message) {
+            super(message);
+        }
     }
 
     public class SymbolNotFound extends RuntimeException {
@@ -158,6 +163,9 @@ public class Instruction {
     }
 
     public class LabelAddressNotFound extends RuntimeException {
+        public LabelAddressNotFound(String message) {
+            super(message);
+        }
     }
 
 }
