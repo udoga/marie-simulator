@@ -3,9 +3,7 @@ package marie;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
-
 import static org.junit.Assert.*;
-
 
 public class CompilerTest {
 
@@ -46,13 +44,6 @@ public class CompilerTest {
         String sourceCode = "ORG 100\nWrongSymbol 100\nHalt\nEND";
         compiler.compile(sourceCode);
     }
-
-/*    @Test
-    public void testDeneme() throws Exception {
-        String sourceCode = "Load X\nHalt\nX: Dec 20";
-        int[][] objectCode = {{0x0, 0x1002}, {0x1, 0x7000}, {0x2, 0x0014}};
-        assertArrayEquals(objectCode, compiler.compile(sourceCode));
-    }*/
 
     @Test
     public void testCompileErrorMessage_ShowsMultipleErrors() throws Exception {

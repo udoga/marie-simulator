@@ -3,7 +3,6 @@ package marie;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-
 public class Compiler {
 
     private Parser parser = new Parser();
@@ -79,10 +78,6 @@ public class Compiler {
             }
             throwCompileErrorIfErrorsExist();
         }
-
-    public HashMap<String, Integer> getLabelAddressTable() {
-        return labelAddressTable;
-    }
 
     public String[][] getLabelTableData(String[][] labelTableData) {
         String[] labels = new String[labelAddressTable.size()];

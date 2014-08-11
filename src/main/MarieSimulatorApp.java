@@ -1,6 +1,5 @@
 package main;
 
-import gui.MainWindow;
 import marie.Simulator;
 
 public class MarieSimulatorApp {

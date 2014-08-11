@@ -1,15 +1,11 @@
-package gui;
+package main;
 
 import javax.swing.*;
-
 import marie.Simulator;
 import net.miginfocom.swing.MigLayout;
-
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.HashMap;
-
 import com.sun.java.swing.plaf.gtk.GTKLookAndFeel;
 
 public class MainWindow {

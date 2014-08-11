@@ -102,7 +102,7 @@ public class Instruction {
         validateStatusForConversion();
         if (symbol.equals("dec")) return Integer.parseInt(data);
         if (symbol.equals("hex")) return Integer.parseInt(data, 16);
-        String addressPart = (symbol.matches(rriSymbolRegex))? "000" : address;
+        String addressPart = (symbol.matches(rriSymbolRegex))? "000" : formatAddress(address);
         return Integer.parseInt(getOpcode() + addressPart, 16);
     }
 
@@ -111,6 +111,10 @@ public class Instruction {
                 throw new InvalidConversion();
             if (symbol.matches("(org)|(end)"))
                 throw new InvalidConversion();
+        }
+
+        private String formatAddress(String address) {
+            return String.format("%03x", Integer.parseInt(address, 16));
         }
 
         private String getOpcode() {
