@@ -1,6 +1,8 @@
 package main;
 
 import javax.swing.*;
+
+import marie.Compiler;
 import marie.Simulator;
 import net.miginfocom.swing.MigLayout;
 import java.awt.*;
@@ -10,11 +12,12 @@ import com.sun.java.swing.plaf.gtk.GTKLookAndFeel;
 
 public class MainWindow {
 
-    private JTextArea textArea;
+    private JTextArea sourceCodeArea;
     private JButton resetButton;
     private JButton uploadButton;
     private JButton runButton;
     private JButton runNextButton;
+    private JTextArea consoleArea;
     private JLabel[] registerValues = new JLabel[6];
 
     private JTable memoryTable;
@@ -52,7 +55,7 @@ public class MainWindow {
         }
 
         private JPanel createRoot() {
-            JPanel root = new JPanel(new MigLayout("wrap 3", "[grow][][]", "[grow][]"));
+            JPanel root = new JPanel(new MigLayout("wrap 3", "[grow][grow][]", "[grow][]"));
             root.add(createTextAreaScrollPanel(), "span 2, wmin 300, hmin 100, grow");
             root.add(createTablePanel(), "spany, width 120:200:, grow");
             root.add(createRegisterPanel(), "grow");
@@ -62,9 +65,9 @@ public class MainWindow {
 
             private JScrollPane createTextAreaScrollPanel() {
                 Font font = new Font(Font.MONOSPACED, Font.PLAIN, 12);
-                textArea = new JTextArea();
-                textArea.setFont(font);
-                return new JScrollPane(textArea);
+                sourceCodeArea = new JTextArea();
+                sourceCodeArea.setFont(font);
+                return new JScrollPane(sourceCodeArea);
             }
 
             private JPanel createTablePanel() {
@@ -150,20 +153,31 @@ public class MainWindow {
                 }
 
             private JPanel createOptionPanel() {
-                JPanel optionPanel = new JPanel(new MigLayout());
                 createButtons();
-                optionPanel.add(resetButton);
+                JPanel optionPanel = new JPanel(new MigLayout("wrap 5", "[grow][][][][]", "[][grow]"));
+                optionPanel.add(resetButton, "cell 1 0");
                 optionPanel.add(uploadButton);
-                optionPanel.add(runButton, "wrap");
-                optionPanel.add(runNextButton, "spanx, right, gaptop 10");
+                optionPanel.add(runButton);
+                optionPanel.add(runNextButton);
+                optionPanel.add(createConsoleAreaScrollPanel(), "span, width 200:300:, hmax 116, grow");
                 return optionPanel;
             }
 
                 private void createButtons() {
                     resetButton = new JButton("Reset");
-                    uploadButton = new JButton("Upload Program");
-                    runButton = new JButton("Run Program");
-                    runNextButton = new JButton("Run Next Step");
+                    uploadButton = new JButton("Upload");
+                    runButton = new JButton("Run");
+                    runNextButton = new JButton("Run Next");
+                }
+
+                private JScrollPane createConsoleAreaScrollPanel() {
+                    Font font = new Font(Font.MONOSPACED, Font.PLAIN, 12);
+                    consoleArea = new JTextArea();
+                    consoleArea.setFont(font);
+                    consoleArea.setEditable(false);
+                    consoleArea.setLineWrap(true);
+                    consoleArea.setWrapStyleWord(true);
+                    return new JScrollPane(consoleArea);
                 }
 
     private void enableActions() {
@@ -189,10 +203,14 @@ public class MainWindow {
         }
 
         private void upload() {
-            String sourceCode = textArea.getText();
-            simulator.uploadProgram(sourceCode);
-            refreshMemoryTableData();
-            refreshLabelTableData();
+            try {
+                simulator.uploadProgram(sourceCodeArea.getText());
+                consoleArea.setText("Compile Successful");
+                refreshLabelTableData();
+                refreshMemoryTableData();
+            } catch (Compiler.CompileError e) {
+                consoleArea.setText(e.getMessage());
+            }
         }
 
 

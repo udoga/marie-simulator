@@ -12,9 +12,15 @@ public class Compiler {
     private HashMap<String, Integer> labelAddressTable;
 
     public int[][] compile(String sourceCode) {
+        resetProperties();
         generateInstructions(sourceCode);
         processAddressAssignments();
         return generateObjectCode();
+    }
+
+    private void resetProperties() {
+        errorMessage = null;
+        labelAddressTable = new HashMap<String, Integer>();
     }
 
     private void generateInstructions(String sourceCode) {
@@ -43,7 +49,6 @@ public class Compiler {
 
     private void processAddressAssignments() {
         int locationCounter = 0;
-        labelAddressTable = new HashMap<String, Integer>();
         for (Instruction instruction: instructions) {
             if (instruction.isEnd()) break;
             if (instruction.isOrg()) {
