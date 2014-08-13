@@ -16,4 +16,11 @@ public class ParserTest {
         assertArrayEquals(expectedTokens, parser.getTokens(sourceCode));
     }
 
+    @Test
+    public void getTokens_WhenStartsWithEnterChar() throws Exception {
+        String sourceCode = "\n\nORG 100\nHalt\n";
+        String[][] expectedTokens = {{"ORG", "100"}, {"Halt"}};
+        assertArrayEquals(expectedTokens, parser.getTokens(sourceCode));
+    }
+
 }
