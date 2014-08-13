@@ -112,4 +112,9 @@ public class InstructionTest {
         return labelAddressTable;
     }
 
+    @Test(expected = Instruction.InvalidInstruction.class)
+    public void testThrowsInvalidInstruction_WhenAddressLabelWithOrg() throws Exception {
+        instruction = new Instruction("ORG", "X");
+    }
+
 }

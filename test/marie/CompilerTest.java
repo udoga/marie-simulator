@@ -49,11 +49,11 @@ public class CompilerTest {
     public void testCompileErrorMessage_ShowsMultipleErrors() throws Exception {
         String expectedErrorMessage =
                 "Line 2: invalid instruction error: expected instruction symbol\n\n" +
-                "Line 3: invalid instruction error: wrong token count, memory reference instruction" +
+                "Line 3: invalid instruction error: wrong token count, 'load' instruction" +
                     " should consist of one symbol and one address\n\n" +
                 "Line 4: invalid instruction error: invalid address or address label '12z'\n\n" +
                 "Line 5: invalid instruction error: invalid data\n\n" +
-                "Line 6: invalid instruction error: wrong token count, register reference instruction" +
+                "Line 6: invalid instruction error: wrong token count, 'halt' instruction" +
                     " should be only one symbol";
         expectedEx.expect(Compiler.CompileError.class);
         expectedEx.expectMessage(expectedErrorMessage);
@@ -67,11 +67,22 @@ public class CompilerTest {
         String expectedErrorMessage =
                 "Line 2: instruction conversion error: undefined address label 'X'\n\n" +
                 "Line 3: instruction conversion error: undefined address label 'Y'";
-
         expectedEx.expect(Compiler.CompileError.class);
         expectedEx.expectMessage(expectedErrorMessage);
 
         String sourceCode = "ORG 100\nLoad X\nAdd Y\nHalt\nEND";
+        compiler.compile(sourceCode);
+    }
+
+    @Test
+    public void testThrowsCompileError_WhenWrongOrgEndFormat() throws Exception {
+        String expectedErrorMessage =
+                "Line 1: invalid instruction error: org instruction address should be numeric\n\n" +
+                "Line 3: invalid instruction error: wrong token count, 'end' instruction should be only one symbol";
+        expectedEx.expect(Compiler.CompileError.class);
+        expectedEx.expectMessage(expectedErrorMessage);
+
+        String sourceCode = "ORG X\nX: Dec 10\nEND 100";
         compiler.compile(sourceCode);
     }
 

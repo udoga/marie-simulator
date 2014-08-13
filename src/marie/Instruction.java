@@ -5,11 +5,13 @@ import java.util.HashMap;
 
 public class Instruction {
 
-    private static final String mriSymbolRegex = "(jns)|(load)|(store)|(add)|(subt)|(jump)|(addi)|(jumpi)|(org)";
-    private static final String rriSymbolRegex = "(input)|(output)|(halt)|(skipcond)|(clear)|(end)";
+    private static final String mriSymbolRegex = "(jns)|(load)|(store)|(add)|(subt)|(jump)|(addi)|(jumpi)";
+    private static final String rriSymbolRegex = "(input)|(output)|(halt)|(skipcond)|(clear)";
     private static final String dataSymbolRegex = "(hex)|(dec)";
+    private static final String pseudoSymbolRegex = "(org)|(end)";
 
-    private static final String symbolRegex = mriSymbolRegex + "|" + rriSymbolRegex + "|" + dataSymbolRegex;
+    private static final String symbolRegex =
+            mriSymbolRegex + "|" + rriSymbolRegex + "|" + dataSymbolRegex + "|" + pseudoSymbolRegex;
     private static final String addressRegex = "([0-9][0-9a-fA-F]{0,2})|(0+[0-9a-fA-F]{0,3})";
     private static final String addressLabelRegex = "[a-zA-Z]\\w*";
     private static final String labelRegex = addressLabelRegex + ":";
@@ -57,11 +59,11 @@ public class Instruction {
         }
 
         private void validateTokenCountBySymbolType(String[] instructionTokens) {
-            if (symbol.matches(mriSymbolRegex + "|" + dataSymbolRegex) && instructionTokens.length != 2)
-                throw new InvalidInstruction("wrong token count, memory reference instruction" +
+            if (symbol.matches(mriSymbolRegex + "|" + dataSymbolRegex + "|(org)") && instructionTokens.length != 2)
+                throw new InvalidInstruction("wrong token count, '" + symbol + "' instruction" +
                         " should consist of one symbol and one address");
-            if (symbol.matches(rriSymbolRegex) && instructionTokens.length != 1)
-                throw new InvalidInstruction("wrong token count, register reference instruction" +
+            if (symbol.matches(rriSymbolRegex + "|(end)") && instructionTokens.length != 1)
+                throw new InvalidInstruction("wrong token count, '" + symbol + "' instruction" +
                         " should be only one symbol");
         }
 
@@ -72,6 +74,11 @@ public class Instruction {
                 else if (instructionTokens[1].matches(addressLabelRegex))
                     addressLabel = instructionTokens[1];
                 else throw new InvalidInstruction("invalid address or address label '" + instructionTokens[1] + "'");
+            }
+            if (symbol.equals("org")) {
+                if (instructionTokens[1].matches(addressRegex))
+                    address = instructionTokens[1];
+                else throw new InvalidInstruction("org instruction address should be numeric");
             }
         }
 
