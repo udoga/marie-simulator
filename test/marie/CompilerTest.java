@@ -86,4 +86,16 @@ public class CompilerTest {
         compiler.compile(sourceCode);
     }
 
+    @Test
+    public void testErrorLineNumberShouldBeTrue_WhenSourceCodeIsMessy() throws Exception {
+        String expectedErrorMessage =
+                "Line 4: invalid instruction error: unknown symbol 'WrongSymbol'\n\n" +
+                "Line 7: invalid instruction error: wrong token count, 'halt' instruction should be only one symbol";
+        expectedEx.expect(Compiler.CompileError.class);
+        expectedEx.expectMessage(expectedErrorMessage);
+
+        String sourceCode = "\n\n ORG 100\nWrongSymbol\n  \n\nHalt 100\n";
+        compiler.compile(sourceCode);
+    }
+
 }

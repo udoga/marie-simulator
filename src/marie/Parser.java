@@ -5,26 +5,26 @@ import java.util.Arrays;
 public class Parser {
 
     public String[][] getTokens(String sourceCode) {
-        String[] lines = getLines(sourceCode);
+        String[] lines = sourceCode.split("\\n");
         String[][] tokens = new String[lines.length][];
-        for (int i = 0; i < lines.length; i++) {
-            lines[i] = deleteComment(lines[i]);
-            tokens[i] = lines[i].split("\\s+");
-        }
+        for (int i = 0; i < lines.length; i++)
+            tokens[i] = getLineTokens(lines[i]);
         return tokens;
     }
 
-        private String[] getLines(String sourceCode) {
-            String[] lines = sourceCode.split("(\\n(\\s)*(;.*)*)+");
-            if (lines[0].isEmpty())
-                lines = Arrays.copyOfRange(lines, 1, lines.length);
-            return lines;
-        }
+    private String[] getLineTokens(String line) {
+        line = deleteComment(line);
+        if (line.matches("\\s*")) return new String[]{};
+        String[] lineTokens = line.split("\\s+");
+        if (lineTokens[0].isEmpty())
+            lineTokens = Arrays.copyOfRange(lineTokens, 1, lineTokens.length);
+        return lineTokens;
+    }
 
-        private String deleteComment(String line) {
-            if (line.contains(";"))
-                line = line.split(";")[0];
-            return line;
-        }
+    private String deleteComment(String line) {
+        if (line.contains(";"))
+            line = line.split(";")[0];
+        return line;
+    }
 
 }

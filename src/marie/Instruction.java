@@ -28,6 +28,7 @@ public class Instruction {
     private String data;
 
     public Integer memoryLocation;
+    public Integer lineNo;
 
     public Instruction(String... instructionTokens) {
         analyze(instructionTokens);

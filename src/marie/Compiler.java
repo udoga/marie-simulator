@@ -24,14 +24,22 @@ public class Compiler {
     }
 
     private void generateInstructions(String sourceCode) {
-        String tokens[][] = parser.getTokens(sourceCode);
-        instructions = new Instruction[tokens.length];
+        String[][] tokens = parser.getTokens(sourceCode);
+        ArrayList<Instruction> instructionList = new ArrayList<Instruction>();
         for (int i = 0; i < tokens.length; i++) {
-            try { instructions[i] = new Instruction(tokens[i]); }
-            catch (Instruction.InvalidInstruction e) {
-                addError(i+1, "invalid instruction error: " + e.getMessage()); }
+            if (tokens[i].length != 0) {
+                try {
+                    Instruction instruction = new Instruction(tokens[i]);
+                    instruction.lineNo = i+1;
+                    instructionList.add(instruction);
+                } catch (Instruction.InvalidInstruction e) {
+                    addError(i+1, "invalid instruction error: " + e.getMessage());
+                }
+            }
         }
         throwCompileErrorIfErrorsExist();
+        instructions = new Instruction[instructionList.size()];
+        instructions = instructionList.toArray(instructions);
     }
 
         private void addError(int lineNo, String message) {
@@ -74,11 +82,11 @@ public class Compiler {
     }
 
         private void findAndSetLabelsAddresses() {
-            for (int i = 0; i < instructions.length; i++) {
+            for (Instruction instruction: instructions) {
                 try {
-                    instructions[i].findAddressFromTable(labelAddressTable);
+                    instruction.findAddressFromTable(labelAddressTable);
                 } catch (Instruction.LabelAddressNotFound e) {
-                    addError(i+1, "instruction conversion error: " + e.getMessage());
+                    addError(instruction.lineNo, "instruction conversion error: " + e.getMessage());
                 }
             }
             throwCompileErrorIfErrorsExist();
