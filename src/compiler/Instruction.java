@@ -1,4 +1,4 @@
-package marie;
+package compiler;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -99,7 +99,7 @@ public class Instruction {
                         (Integer.parseInt(instructionTokens[1]) <= 0xFFFF);
                 if (hexDataValid || decDataValid)
                     data = instructionTokens[1];
-                else throw new InvalidInstruction("invalid data");
+                else throw new InvalidInstruction("invalid data '" + instructionTokens[1] + "'");
             }
         }
 

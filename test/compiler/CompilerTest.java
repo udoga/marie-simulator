@@ -1,4 +1,4 @@
-package marie;
+package compiler;
 
 import org.junit.Rule;
 import org.junit.Test;
@@ -7,7 +7,7 @@ import static org.junit.Assert.*;
 
 public class CompilerTest {
 
-    Compiler compiler = new Compiler();
+    compiler.Compiler compiler = new Compiler();
 
     @Test
     public void testCompileSourceCode() {
@@ -52,13 +52,13 @@ public class CompilerTest {
                 "Line 3: invalid instruction error: wrong token count, 'load' instruction" +
                     " should consist of one symbol and one address\n\n" +
                 "Line 4: invalid instruction error: invalid address or address label '12z'\n\n" +
-                "Line 5: invalid instruction error: invalid data\n\n" +
+                "Line 5: invalid instruction error: invalid data '65536'\n\n" +
                 "Line 6: invalid instruction error: wrong token count, 'halt' instruction" +
                     " should be only one symbol";
         expectedEx.expect(Compiler.CompileError.class);
         expectedEx.expectMessage(expectedErrorMessage);
 
-        String sourceCode = "ORG 100\nX:\nLoad X Y\nStore 12z\nDec 65537\nHalt 20\nEND";
+        String sourceCode = "ORG 100\nX:\nLoad X Y\nStore 12z\nDec 65536\nHalt 20\nEND";
         compiler.compile(sourceCode);
     }
 

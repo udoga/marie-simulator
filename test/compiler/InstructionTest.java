@@ -1,4 +1,4 @@
-package marie;
+package compiler;
 
 import org.junit.Test;
 import java.util.HashMap;

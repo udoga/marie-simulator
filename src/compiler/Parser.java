@@ -1,4 +1,4 @@
-package marie;
+package compiler;
 
 import java.util.Arrays;
 

@@ -1,9 +1,11 @@
 package marie;
 
+import compiler.Compiler;
+
 public class Simulator {
 
     private Memory memory = new Memory(0x1000);
-    private marie.Compiler compiler = new Compiler();
+    private compiler.Compiler compiler = new Compiler();
     private Loader loader = new Loader(memory);
 
     private String consoleMessage;
