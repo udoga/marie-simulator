@@ -117,4 +117,16 @@ public class InstructionTest {
         instruction = new Instruction("ORG", "X");
     }
 
+    @Test
+    public void testSkipcondInstructionConversion() throws Exception {
+        instruction = new Instruction("Skipcond", "400");
+        assertEquals("Instruction(Symbol: skipcond, Condition: 400)", instruction.toString());
+        assertEquals(0x8400, instruction.convertToHexCode());
+    }
+
+    @Test(expected = Instruction.InvalidInstruction.class)
+    public void testThrowsInvalidInstruction_WhenAddressLabelWithSkipcond() throws Exception {
+        instruction = new Instruction("Skipcond", "X");
+    }
+
 }

@@ -77,7 +77,7 @@ public class CompilerTest {
     @Test
     public void testThrowsCompileError_WhenWrongOrgEndFormat() throws Exception {
         String expectedErrorMessage =
-                "Line 1: invalid instruction error: org instruction address should be numeric\n\n" +
+                "Line 1: invalid instruction error: invalid address 'X'\n\n" +
                 "Line 3: invalid instruction error: wrong token count, 'end' instruction should be only one symbol";
         expectedEx.expect(Compiler.CompileError.class);
         expectedEx.expectMessage(expectedErrorMessage);

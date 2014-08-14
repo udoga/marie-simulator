@@ -21,37 +21,42 @@ public class Instruction {
     private static final String[] symbols = {"jns", "load", "store", "add", "subt",
             "input", "output", "halt", "skipcond", "jump", "clear", "addi", "jumpi"};
 
+    private String[] instructionTokens;
+
     private String symbol;
     private String address;
     private String label;
     private String addressLabel;
     private String data;
+    private String condition;
 
     public Integer memoryLocation;
     public Integer lineNo;
 
     public Instruction(String... instructionTokens) {
-        analyze(instructionTokens);
+        this.instructionTokens = instructionTokens;
+        analyzeInstructionTokens();
     }
 
-    private void analyze(String[] instructionTokens) {
+    private void analyzeInstructionTokens() {
         if (instructionTokens.length == 0)
             throw new InvalidInstruction("empty instruction, no tokens found");
-        instructionTokens = extractLabel(instructionTokens);
-        findAndSetSymbol(instructionTokens);
-        validateTokenCountBySymbolType(instructionTokens);
-        findAndSetAddress(instructionTokens);
-        findAndSetData(instructionTokens);
+        extractLabel();
+        findAndSetSymbol();
+        validateTokenCountBySymbolType();
+        findAndSetAddress();
+        findAndSetData();
+        findAndSetCondition();
     }
 
-        private String[] extractLabel(String[] instructionTokens) {
+        private void extractLabel() {
             if (instructionTokens[0].matches(labelRegex)) {
                 label = instructionTokens[0].substring(0, instructionTokens[0].length()-1);
-                return Arrays.copyOfRange(instructionTokens, 1, instructionTokens.length);
-            } else return instructionTokens;
+                instructionTokens = Arrays.copyOfRange(instructionTokens, 1, instructionTokens.length);
+            }
         }
 
-        private void findAndSetSymbol(String[] instructionTokens) {
+        private void findAndSetSymbol() {
             if (instructionTokens.length == 0)
                 throw new InvalidInstruction("expected instruction symbol");
             if (!instructionTokens[0].toLowerCase().matches(symbolRegex))
@@ -59,16 +64,19 @@ public class Instruction {
             symbol = instructionTokens[0].toLowerCase();
         }
 
-        private void validateTokenCountBySymbolType(String[] instructionTokens) {
+        private void validateTokenCountBySymbolType() {
             if (symbol.matches(mriSymbolRegex + "|" + dataSymbolRegex + "|(org)") && instructionTokens.length != 2)
                 throw new InvalidInstruction("wrong token count, '" + symbol + "' instruction" +
                         " should consist of one symbol and one address");
-            if (symbol.matches(rriSymbolRegex + "|(end)") && instructionTokens.length != 1)
+            if (symbol.matches(rriSymbolRegex + "|(end)") && !symbol.equals("skipcond") && instructionTokens.length != 1)
                 throw new InvalidInstruction("wrong token count, '" + symbol + "' instruction" +
                         " should be only one symbol");
+            if (symbol.equals("skipcond") && instructionTokens.length != 2)
+                throw new InvalidInstruction("wrong token count, '" + symbol + "' instruction" +
+                        " should consist of one symbol and one condition");
         }
 
-        private void findAndSetAddress(String[] instructionTokens) {
+        private void findAndSetAddress() {
             if (symbol.matches(mriSymbolRegex)) {
                 if (instructionTokens[1].matches(addressRegex))
                     address = instructionTokens[1];
@@ -79,11 +87,11 @@ public class Instruction {
             if (symbol.equals("org")) {
                 if (instructionTokens[1].matches(addressRegex))
                     address = instructionTokens[1];
-                else throw new InvalidInstruction("org instruction address should be numeric");
+                else throw new InvalidInstruction("invalid address '" + instructionTokens[1] + "'");
             }
         }
 
-        private void findAndSetData(String[] instructionTokens) {
+        private void findAndSetData() {
             if (symbol.matches(dataSymbolRegex)) {
                 boolean hexDataValid = symbol.equals("hex") && instructionTokens[1].matches(hexDataRegex) &&
                         (Integer.parseInt(instructionTokens[1], 16) <= 0xFFFF);
@@ -95,14 +103,23 @@ public class Instruction {
             }
         }
 
+        private void findAndSetCondition() {
+            if (symbol.equals("skipcond")) {
+                if (instructionTokens[1].matches(addressRegex))
+                    condition = instructionTokens[1];
+                else throw new InvalidInstruction("invalid condition '" + instructionTokens[1] + "'");
+            }
+        }
+
     public String toString() {
         String labelInfo = (label == null)? "" : (", Label: " + label);
         String symbolInfo = (symbol == null)? "" : (", Symbol: " + symbol);
         String addressInfo = (address == null)? "" : (", Address: " + address);
         String addressLabelInfo = (addressLabel == null)? "" : (", Address Label: " + addressLabel);
         String dataInfo = (data == null)? "" : (", Data: " + data);
+        String conditionInfo = (condition == null)? "" : (", Condition: " + condition);
 
-        String info = (labelInfo + symbolInfo + addressInfo + addressLabelInfo + dataInfo).substring(2);
+        String info = (labelInfo + symbolInfo + addressInfo + addressLabelInfo + dataInfo + conditionInfo).substring(2);
         return "Instruction(" + info + ")";
     }
 
@@ -110,7 +127,10 @@ public class Instruction {
         validateStatusForConversion();
         if (symbol.equals("dec")) return Integer.parseInt(data);
         if (symbol.equals("hex")) return Integer.parseInt(data, 16);
-        String addressPart = (symbol.matches(rriSymbolRegex))? "000" : formatAddress(address);
+
+        String addressPart = "000";
+        if (symbol.equals("skipcond")) addressPart = formatAddress(condition);
+        else if (symbol.matches(mriSymbolRegex)) addressPart =  formatAddress(address);
         return Integer.parseInt(getOpcode() + addressPart, 16);
     }
 
@@ -118,6 +138,8 @@ public class Instruction {
             if (symbol.matches(mriSymbolRegex) && address == null)
                 throw new InvalidConversion();
             if (symbol.matches("(org)|(end)"))
+                throw new InvalidConversion();
+            if (symbol.equals("skipcond") && condition == null)
                 throw new InvalidConversion();
         }
 

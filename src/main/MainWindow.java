@@ -47,7 +47,10 @@ public class MainWindow {
 
         private void setLookAndFeel() {
             try {
-                UIManager.setLookAndFeel(new GTKLookAndFeel());
+                String systemsLookAndFeel = UIManager.getSystemLookAndFeelClassName();
+                if (!systemsLookAndFeel.equals("javax.swing.plaf.metal.MetalLookAndFeel"))
+                    UIManager.setLookAndFeel(systemsLookAndFeel);
+                else UIManager.setLookAndFeel(new GTKLookAndFeel());
             } catch (Exception e) {
                 e.printStackTrace();
             }
