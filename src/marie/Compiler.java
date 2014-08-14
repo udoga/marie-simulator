@@ -8,6 +8,7 @@ public class Compiler {
     private Parser parser = new Parser();
     private Instruction[] instructions;
     private String errorMessage;
+    private String warningMessage;
 
     private HashMap<String, Integer> labelAddressTable;
 
@@ -20,6 +21,7 @@ public class Compiler {
 
     private void resetProperties() {
         errorMessage = null;
+        warningMessage = null;
         labelAddressTable = new HashMap<String, Integer>();
     }
 
@@ -72,6 +74,7 @@ public class Compiler {
 
     private int[][] generateObjectCode() {
         findAndSetLabelsAddresses();
+        checkSourceCodeLayout();
         ArrayList<int[]> objectCodeList = new ArrayList<int[]>();
         for (Instruction instruction: instructions) {
             if (instruction.memoryLocation != null)
@@ -92,6 +95,28 @@ public class Compiler {
             throwCompileErrorIfErrorsExist();
         }
 
+        private void checkSourceCodeLayout() {
+            boolean haltFound = false;
+            for (Instruction instruction: instructions) {
+                if (instruction.isHalt()) haltFound = true;
+                if (!haltFound && instruction.isData())
+                    addWarning(instruction.lineNo, "data instruction should be after the 'halt'");
+            }
+            if (!haltFound) {
+                warningMessage = null;
+                addWarning(null, "'halt' command not found");
+            }
+        }
+
+            private void addWarning(Integer lineNo, String message) {
+                String newMessage = "warning: " + message;
+                if (lineNo != null) newMessage = "Line " + lineNo + ": " + newMessage;
+                if (warningMessage == null)
+                    warningMessage = newMessage;
+                else
+                    warningMessage += "\n\n" + newMessage;
+            }
+
     public String[][] getLabelTableData(String[][] labelTableData) {
         String[] labels = new String[labelAddressTable.size()];
         labels = labelAddressTable.keySet().toArray(labels);
@@ -100,6 +125,14 @@ public class Compiler {
             labelTableData[i][1] = String.format("%03x", labelAddressTable.get(labels[i]));
         }
         return labelTableData;
+    }
+
+    public String getWarningMessage() {
+        return warningMessage;
+    }
+
+    public boolean hasWarningMessage() {
+        return warningMessage != null;
     }
 
     public class CompileError extends RuntimeException {

@@ -2,7 +2,6 @@ package main;
 
 import javax.swing.*;
 
-import marie.Compiler;
 import marie.Simulator;
 import net.miginfocom.swing.MigLayout;
 import java.awt.*;
@@ -203,14 +202,10 @@ public class MainWindow {
         }
 
         private void upload() {
-            try {
-                simulator.uploadProgram(sourceCodeArea.getText());
-                consoleArea.setText("Compile Successful");
-                refreshLabelTableData();
-                refreshMemoryTableData();
-            } catch (Compiler.CompileError e) {
-                consoleArea.setText(e.getMessage());
-            }
+            simulator.uploadProgram(sourceCodeArea.getText());
+            consoleArea.setText(simulator.getConsoleMessage());
+            refreshLabelTableData();
+            refreshMemoryTableData();
         }
 
 

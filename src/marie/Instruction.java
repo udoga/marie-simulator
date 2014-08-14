@@ -149,6 +149,14 @@ public class Instruction {
         return symbol.equals("org");
     }
 
+    public boolean isHalt() {
+        return symbol.equals("halt");
+    }
+
+    public boolean isData() {
+        return symbol.matches(dataSymbolRegex);
+    }
+
     public int getAddress() {
         return Integer.parseInt(address, 16);
     }

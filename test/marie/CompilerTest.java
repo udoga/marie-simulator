@@ -98,4 +98,19 @@ public class CompilerTest {
         compiler.compile(sourceCode);
     }
 
+    @Test
+    public void testWarningMessage_WhenHaltCommandNotFound() throws Exception {
+        String sourceCode = "Load X\nX: Dec 20";
+        compiler.compile(sourceCode);
+        assertEquals("warning: 'halt' command not found", compiler.getWarningMessage());
+    }
+
+    @Test
+    public void testWarningMessage_WhenDataBeforeHaltCommand() throws Exception {
+        String sourceCode = "Load X\nX: Dec 10\nHalt";
+        compiler.compile(sourceCode);
+        assertEquals("Line 2: warning: data instruction " +
+                "should be after the 'halt'", compiler.getWarningMessage());
+    }
+
 }
