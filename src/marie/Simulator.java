@@ -16,9 +16,9 @@ public class Simulator {
         try {
             int[][] objectCode = compiler.compile(sourceCode);
             addCompilerMessage();
-            microprocessor.start(objectCode[0][0]);
             loader.load(objectCode);
             addMessage("Upload Completed");
+            startMicroprocessor(objectCode);
         } catch (Compiler.CompileError e) {
             addMessage(e.getMessage());
         }
@@ -41,8 +41,20 @@ public class Simulator {
                 consoleMessage += "\n\n" + message;
         }
 
+        private void startMicroprocessor(int[][] objectCode) {
+            try {
+                microprocessor.start(objectCode[0][0]);
+            } catch (ArrayIndexOutOfBoundsException e) {
+                addMessage("microprocessor could not get origin address, check your program is not empty");
+            }
+        }
+
     public void run() {
-        microprocessor.run();
+        int i;
+        for (i = 0; !microprocessor.isStopped() && i < 1000; i++)
+            microprocessor.runNextInstruction();
+        if (i == 1000)
+            addMessage("execution stopped: instruction run limit reached, check your program includes 'halt' command");
     }
 
     public void runNextInstruction() {

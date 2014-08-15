@@ -154,7 +154,7 @@ public class MainWindow {
                     int[] simulatorRegisterValues = (simulator == null)?
                             new int[6] : simulator.getMicroprocessor().getRegisterValues();
                     for (int i = 0; i < registerValues.length; i++)
-                        registerValues[i].setText(String.format("%04x", simulatorRegisterValues[i]));
+                        registerValues[i].setText(String.format("%04x", simulatorRegisterValues[i]).toUpperCase());
                 }
 
             private JPanel createOptionPanel() {
