@@ -140,4 +140,8 @@ public class Microprocessor {
         return stopped;
     }
 
+    public void setInput(int value) {
+        InREG = value;
+    }
+
 }

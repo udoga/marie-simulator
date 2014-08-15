@@ -46,6 +46,15 @@ public class MicroprocessorTest {
         runNextAndExpectRegisterValues(0x0000, 0x0000, 0x0000, 0x7000, 0x0108, 0x0000, 0x0000);
     }
 
+    @Test
+    public void testInputDevice() throws Exception {
+        uploadProgramTwo(memory);
+        microprocessor.start(0x100);
+        microprocessor.setInput(0x0001);
+
+        runNextAndExpectRegisterValues(0x0001, 0x0000, 0x0000, 0x5000, 0x0101, 0x0000, 0x0001);
+    }
+
     private void runNextAndExpectRegisterValues(int... expectedRegisterValues) {
         microprocessor.runNextInstruction();
         assertArrayEquals(expectedRegisterValues, microprocessor.getRegisterValues());

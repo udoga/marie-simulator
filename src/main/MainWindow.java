@@ -19,6 +19,7 @@ public class MainWindow {
     private JButton nextStepButton;
     private JTextArea consoleArea;
     private JLabel[] registerValues = new JLabel[6];
+    private JTextField inputField;
 
     private JTable memoryTable;
     private String[][] memoryTableData;
@@ -143,18 +144,20 @@ public class MainWindow {
                 }
 
                 private void addRegisterValues(JPanel registerPanel) {
+                    inputField = new JTextField(4);
                     for (int i = 0; i < registerValues.length; i++) {
                         registerValues[i] = new JLabel("");
                         registerPanel.add(registerValues[i], "gapleft 10");
                     }
-                    registerPanel.add(new JTextField(4), "gapleft 10");
+                    registerPanel.add(inputField, "gapleft 10");
                 }
 
                 private void refreshRegisterValues() {
                     int[] simulatorRegisterValues = (simulator == null)?
-                            new int[6] : simulator.getMicroprocessor().getRegisterValues();
+                            new int[7] : simulator.getMicroprocessor().getRegisterValues();
                     for (int i = 0; i < registerValues.length; i++)
                         registerValues[i].setText(String.format("%04X", simulatorRegisterValues[i] & 0xFFFF));
+                    inputField.setText(String.format("%04X", simulatorRegisterValues[6] & 0xFFFF));
                 }
 
             private JPanel createOptionPanel() {
@@ -204,6 +207,7 @@ public class MainWindow {
 
         @Override
         public void actionPerformed(ActionEvent e) {
+            simulator.setInputDevice(inputField.getText());
             if (e.getSource().equals(resetButton))
                 simulator.reset();
             else if (e.getSource().equals(uploadButton))

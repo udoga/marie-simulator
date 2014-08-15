@@ -68,6 +68,13 @@ public class Simulator {
         clearConsoleMessage();
     }
 
+    public void setInputDevice(String value) {
+        String inputRegex = "[0-9a-fA-F]{1,4}";
+        if (value.matches(inputRegex))
+            microprocessor.setInput(Integer.parseInt(value, 16));
+        else addMessage("invalid input device value");
+    }
+
     public Memory getMemory() {
         return memory;
     }

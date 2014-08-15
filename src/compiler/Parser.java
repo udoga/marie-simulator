@@ -22,8 +22,8 @@ public class Parser {
     }
 
     private String deleteComment(String line) {
-        if (line.contains("//"))
-            line = line.split("//")[0];
+        if (line.contains("/"))
+            line = line.split("/")[0];
         return line;
     }
 
