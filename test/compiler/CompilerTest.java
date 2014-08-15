@@ -27,7 +27,7 @@ public class CompilerTest {
     @Test
     public void testConvertLabelsToAddresses() throws Exception {
         String sourceCode = "ORG 100\nLoad X\nAdd Y\nSubt Z\nStore SONUC\n" +
-                "Output\nHalt\nX: Dec 10\nY: Dec 20\nZ: Dec 5\nSONUC: Dec 0\nEND";
+                "Output\nHalt\nX, Dec 10\nY, Dec 20\nZ, Dec 5\nSONUC, Dec 0\nEND";
         int[][] objectCode = {{0x100, 0x1106}, {0x101, 0x3107}, {0x102, 0x4108}, {0x103, 0x2109}, {0x104, 0x6000},
                 {0x105, 0x7000}, {0x106, 0x000a}, {0x107, 0x0014}, {0x108, 0x0005}, {0x109, 0x0000}};
         assertArrayEquals(objectCode, compiler.compile(sourceCode));
@@ -58,7 +58,7 @@ public class CompilerTest {
         expectedEx.expect(Compiler.CompileError.class);
         expectedEx.expectMessage(expectedErrorMessage);
 
-        String sourceCode = "ORG 100\nX:\nLoad X Y\nStore 12z\nDec 65536\nHalt 20\nEND";
+        String sourceCode = "ORG 100\nX,\nLoad X Y\nStore 12z\nDec 65536\nHalt 20\nEND";
         compiler.compile(sourceCode);
     }
 
@@ -82,7 +82,7 @@ public class CompilerTest {
         expectedEx.expect(Compiler.CompileError.class);
         expectedEx.expectMessage(expectedErrorMessage);
 
-        String sourceCode = "ORG X\nX: Dec 10\nEND 100";
+        String sourceCode = "ORG X\nX, Dec 10\nEND 100";
         compiler.compile(sourceCode);
     }
 
@@ -100,14 +100,14 @@ public class CompilerTest {
 
     @Test
     public void testWarningMessage_WhenHaltCommandNotFound() throws Exception {
-        String sourceCode = "Load X\nX: Dec 20";
+        String sourceCode = "Load X\nX, Dec 20";
         compiler.compile(sourceCode);
         assertEquals("warning: 'halt' command not found", compiler.getWarningMessage());
     }
 
     @Test
     public void testWarningMessage_WhenDataBeforeHaltCommand() throws Exception {
-        String sourceCode = "Load X\nX: Dec 10\nHalt";
+        String sourceCode = "Load X\nX, Dec 10\nHalt";
         compiler.compile(sourceCode);
         assertEquals("Line 2: warning: data instruction " +
                 "should be after the 'halt'", compiler.getWarningMessage());

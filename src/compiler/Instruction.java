@@ -14,7 +14,7 @@ public class Instruction {
             mriSymbolRegex + "|" + rriSymbolRegex + "|" + dataSymbolRegex + "|" + pseudoSymbolRegex;
     private static final String addressRegex = "([0-9][0-9a-fA-F]{0,2})|(0+[0-9a-fA-F]{0,3})";
     private static final String addressLabelRegex = "[a-zA-Z]\\w*";
-    private static final String labelRegex = addressLabelRegex + ":";
+    private static final String labelRegex = addressLabelRegex + ",";
     private static final String hexDataRegex = "[a-fA-F0-9]+";
     private static final String decDataRegex = "\\d+";
 

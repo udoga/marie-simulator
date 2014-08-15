@@ -27,22 +27,26 @@ public class Compiler {
 
     private void generateInstructions(String sourceCode) {
         String[][] tokens = parser.getTokens(sourceCode);
-        ArrayList<Instruction> instructionList = new ArrayList<Instruction>();
-        for (int i = 0; i < tokens.length; i++) {
-            if (tokens[i].length != 0) {
-                try {
-                    Instruction instruction = new Instruction(tokens[i]);
-                    instruction.lineNo = i+1;
-                    instructionList.add(instruction);
-                } catch (Instruction.InvalidInstruction e) {
-                    addError(i+1, "invalid instruction error: " + e.getMessage());
-                }
-            }
-        }
+        ArrayList<Instruction> instructionList = createInstructionListAndCheckForErrors(tokens);
         throwCompileErrorIfErrorsExist();
         instructions = new Instruction[instructionList.size()];
         instructions = instructionList.toArray(instructions);
     }
+
+        private ArrayList<Instruction> createInstructionListAndCheckForErrors(String[][] tokens) {
+            ArrayList<Instruction> instructionList = new ArrayList<Instruction>();
+            for (int i = 0; i < tokens.length; i++) {
+                if (tokens[i].length != 0) {
+                    try {
+                        Instruction instruction = new Instruction(tokens[i]);
+                        instruction.lineNo = i+1;
+                        instructionList.add(instruction);
+                    } catch (Instruction.InvalidInstruction e) {
+                        addError(i+1, "invalid instruction error: " + e.getMessage());
+                    }
+                }
+            } return instructionList;
+        }
 
         private void addError(int lineNo, String message) {
             String newErrorMessage = "Line " + lineNo + ": "  + message;

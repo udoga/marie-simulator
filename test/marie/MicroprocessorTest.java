@@ -53,7 +53,7 @@ public class MicroprocessorTest {
 
     private void uploadProgramOne(Memory memory) {
     /*  ORG 100 / Load X / Add Y / Subt Z / Store RESULT / Output /
-        Halt / X: Dec 10 / Y: Dec 20 / Z: Dec 5 / RESULT: Dec 0 / END */
+        Halt / X, Dec 10 / Y, Dec 20 / Z, Dec 5 / RESULT, Dec 0 / END */
         int originAddress = 0x100;
         int[] hexCodes = {0x1106, 0x3107, 0x4108, 0x2109, 0x6000, 0x7000, 0x000A, 0x0014, 0x0005, 0x0000};
         for (int i = 0; i < hexCodes.length; i++)
@@ -62,7 +62,7 @@ public class MicroprocessorTest {
 
     private void uploadProgramTwo(Memory memory) {
     /*  ORG 100 / Input / Skipcond 400 / Load X / Jns Inc / Clear / Jump H
-        Load X / H: Halt / Inc: Dec 0 / AddI X / JumpI Inc / X: Hex 10C / Dec 1 */
+        Load X / H, Halt / Inc, Dec 0 / AddI X / JumpI Inc / X, Hex 10C / Dec 1 */
         int originAddress = 0x100;
         int[] hexCodes = {0x5000, 0x8400, 0x110B, 0x0108, 0xA000, 0x9107,
                 0x110B, 0x7000, 0x0000, 0xB10B, 0xC108, 0x010C, 0x0001};
