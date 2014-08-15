@@ -13,13 +13,14 @@ public class Microprocessor {
     private int OutREG;
 
     private int opcode;
-    private boolean stopped = false;
+    private boolean stopped = true;
 
     public Microprocessor(Memory memory) {
         this.memory = memory;
     }
 
-    public void setProgramCounter(int value) {
+    public void start(int value) {
+        stopped = false;
         PC = value;
     }
 
@@ -128,6 +129,11 @@ public class Microprocessor {
 
     public int[] getRegisterValues() {
         return new int[]{AC, MAR, MBR, IR, PC, OutREG, InREG};
+    }
+
+    public void reset() {
+        AC = 0; MAR = 0; MBR = 0; IR = 0; PC = 0; OutREG = 0; InREG = 0;
+        stopped = true;
     }
 
     public boolean isStopped() {

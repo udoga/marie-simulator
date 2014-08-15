@@ -19,7 +19,7 @@ public class Compiler {
         return generateObjectCode();
     }
 
-    private void resetProperties() {
+    public void resetProperties() {
         errorMessage = null;
         warningMessage = null;
         labelAddressTable = new HashMap<String, Integer>();

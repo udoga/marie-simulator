@@ -173,7 +173,14 @@ public class MainWindow {
                     uploadButton = new JButton("Upload");
                     runButton = new JButton("Run");
                     nextStepButton = new JButton("Next Step");
+                    if (simulator != null) setButtonEnables();
                 }
+
+                    private void setButtonEnables() {
+                        boolean microprocessorStopped = simulator.getMicroprocessor().isStopped();
+                        runButton.setEnabled(!microprocessorStopped);
+                        nextStepButton.setEnabled(!microprocessorStopped);
+                    }
 
                 private JScrollPane createConsoleAreaScrollPanel() {
                     Font font = new Font(Font.MONOSPACED, Font.PLAIN, 12);
@@ -197,26 +204,23 @@ public class MainWindow {
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            if (e.getSource().equals(resetButton)) System.out.println("reset");
-            else if (e.getSource().equals(uploadButton)) upload();
-            else if (e.getSource().equals(runButton)) System.out.println("run");
-            else if (e.getSource().equals(nextStepButton)) nextStep();
+            if (e.getSource().equals(resetButton))
+                simulator.reset();
+            else if (e.getSource().equals(uploadButton))
+                simulator.uploadProgram(sourceCodeArea.getText());
+            else if (e.getSource().equals(runButton))
+                simulator.run();
+            else if (e.getSource().equals(nextStepButton))
+                simulator.runNextInstruction();
+            refresh();
         }
 
-        private void upload() {
-            simulator.uploadProgram(sourceCodeArea.getText());
+        private void refresh() {
             consoleArea.setText(simulator.getConsoleMessage());
             refreshLabelTableData();
-            refreshMemoryTableData();
-        }
-
-        private void nextStep() {
-            simulator.runNextInstruction();
-            consoleArea.setText(simulator.getConsoleMessage());
             refreshRegisterValues();
             refreshMemoryTableData();
-            if (simulator.getMicroprocessor().isStopped())
-                nextStepButton.setEnabled(false);
+            setButtonEnables();
         }
 
     }

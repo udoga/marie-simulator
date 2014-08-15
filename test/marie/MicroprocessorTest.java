@@ -11,7 +11,7 @@ public class MicroprocessorTest {
     @Test
     public void testRunsBasicInstructions() throws Exception {
         uploadProgramOne(memory);
-        microprocessor.setProgramCounter(0x100);
+        microprocessor.start(0x100);
                                     // AC      MAR     MBR     IR      PC      OutREG  InREG
         runNextAndExpectRegisterValues(0x000A, 0x0106, 0x000A, 0x1106, 0x0101, 0x0000, 0x0000);
         runNextAndExpectRegisterValues(0x001E, 0x0107, 0x0014, 0x3107, 0x0102, 0x0000, 0x0000);
@@ -25,7 +25,7 @@ public class MicroprocessorTest {
     @Test
     public void testRunProgram() throws Exception {
         uploadProgramOne(memory);
-        microprocessor.setProgramCounter(0x100);
+        microprocessor.start(0x100);
         microprocessor.run();
         assertEquals(0x0019, memory.read(0x109));
     }
@@ -33,7 +33,7 @@ public class MicroprocessorTest {
     @Test
     public void testRunsJumpInstructions() throws Exception {
         uploadProgramTwo(memory);
-        microprocessor.setProgramCounter(0x100);
+        microprocessor.start(0x100);
                                     // AC      MAR     MBR     IR      PC      OutREG  InREG
         runNextAndExpectRegisterValues(0x0000, 0x0000, 0x0000, 0x5000, 0x0101, 0x0000, 0x0000);
         runNextAndExpectRegisterValues(0x0000, 0x0400, 0x0000, 0x8400, 0x0103, 0x0000, 0x0000);

@@ -12,11 +12,11 @@ public class Simulator {
     private String consoleMessage;
 
     public void uploadProgram(String sourceCode) {
-        resetProperties();
+        clearConsoleMessage();
         try {
             int[][] objectCode = compiler.compile(sourceCode);
             addCompilerMessage();
-            microprocessor.setProgramCounter(objectCode[0][0]);
+            microprocessor.start(objectCode[0][0]);
             loader.load(objectCode);
             addMessage("Upload Completed");
         } catch (Compiler.CompileError e) {
@@ -24,7 +24,7 @@ public class Simulator {
         }
     }
 
-        private void resetProperties() {
+        private void clearConsoleMessage() {
             consoleMessage = null;
         }
 
@@ -41,8 +41,19 @@ public class Simulator {
                 consoleMessage += "\n\n" + message;
         }
 
+    public void run() {
+        microprocessor.run();
+    }
+
     public void runNextInstruction() {
         microprocessor.runNextInstruction();
+    }
+
+    public void reset() {
+        memory.reset();
+        compiler.resetProperties();
+        microprocessor.reset();
+        clearConsoleMessage();
     }
 
     public Memory getMemory() {
