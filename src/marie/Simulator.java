@@ -5,7 +5,8 @@ import compiler.Compiler;
 public class Simulator {
 
     private Memory memory = new Memory(0x1000);
-    private compiler.Compiler compiler = new Compiler();
+    private Compiler compiler = new Compiler();
+    private Microprocessor microprocessor = new Microprocessor(memory);
     private Loader loader = new Loader(memory);
 
     private String consoleMessage;
@@ -15,6 +16,7 @@ public class Simulator {
         try {
             int[][] objectCode = compiler.compile(sourceCode);
             addCompilerMessage();
+            microprocessor.setProgramCounter(objectCode[0][0]);
             loader.load(objectCode);
             addMessage("Upload Completed");
         } catch (Compiler.CompileError e) {
@@ -39,6 +41,10 @@ public class Simulator {
                 consoleMessage += "\n\n" + message;
         }
 
+    public void runNextInstruction() {
+        microprocessor.runNextInstruction();
+    }
+
     public Memory getMemory() {
         return memory;
     }
@@ -46,6 +52,11 @@ public class Simulator {
     public Compiler getCompiler() {
         return compiler;
     }
+
+    public Microprocessor getMicroprocessor() {
+        return microprocessor;
+    }
+
 
     public String getConsoleMessage() {
         return consoleMessage;

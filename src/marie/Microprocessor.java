@@ -13,7 +13,7 @@ public class Microprocessor {
     private int OutREG;
 
     private int opcode;
-    private boolean stopped;
+    private boolean stopped = false;
 
     public Microprocessor(Memory memory) {
         this.memory = memory;
@@ -24,7 +24,6 @@ public class Microprocessor {
     }
 
     public void run() {
-        stopped = false;
         while (!stopped)
             runNextInstruction();
     }
@@ -129,6 +128,10 @@ public class Microprocessor {
 
     public int[] getRegisterValues() {
         return new int[]{AC, MAR, MBR, IR, PC, OutREG, InREG};
+    }
+
+    public boolean isStopped() {
+        return stopped;
     }
 
 }

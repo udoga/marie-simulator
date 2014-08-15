@@ -7,6 +7,7 @@ import net.miginfocom.swing.MigLayout;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+
 import com.sun.java.swing.plaf.gtk.GTKLookAndFeel;
 
 public class MainWindow {
@@ -15,7 +16,7 @@ public class MainWindow {
     private JButton resetButton;
     private JButton uploadButton;
     private JButton runButton;
-    private JButton runNextButton;
+    private JButton nextStepButton;
     private JTextArea consoleArea;
     private JLabel[] registerValues = new JLabel[6];
 
@@ -150,8 +151,10 @@ public class MainWindow {
                 }
 
                 private void refreshRegisterValues() {
-                    for (JLabel registerValue : registerValues)
-                        registerValue.setText("0000");
+                    int[] simulatorRegisterValues = (simulator == null)?
+                            new int[6] : simulator.getMicroprocessor().getRegisterValues();
+                    for (int i = 0; i < registerValues.length; i++)
+                        registerValues[i].setText(String.format("%04x", simulatorRegisterValues[i]));
                 }
 
             private JPanel createOptionPanel() {
@@ -160,7 +163,7 @@ public class MainWindow {
                 optionPanel.add(resetButton, "cell 1 0");
                 optionPanel.add(uploadButton);
                 optionPanel.add(runButton);
-                optionPanel.add(runNextButton);
+                optionPanel.add(nextStepButton);
                 optionPanel.add(createConsoleAreaScrollPanel(), "span, width 200:300:, hmax 116, grow");
                 return optionPanel;
             }
@@ -169,7 +172,7 @@ public class MainWindow {
                     resetButton = new JButton("Reset");
                     uploadButton = new JButton("Upload");
                     runButton = new JButton("Run");
-                    runNextButton = new JButton("Run Next");
+                    nextStepButton = new JButton("Next Step");
                 }
 
                 private JScrollPane createConsoleAreaScrollPanel() {
@@ -187,21 +190,17 @@ public class MainWindow {
         resetButton.addActionListener(handler);
         uploadButton.addActionListener(handler);
         runButton.addActionListener(handler);
-        runNextButton.addActionListener(handler);
+        nextStepButton.addActionListener(handler);
     }
 
     private class MarieSimulatorHandler implements ActionListener {
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            if (e.getSource().equals(resetButton))
-                System.out.println("reset");
-            else if (e.getSource().equals(uploadButton))
-                upload();
-            else if (e.getSource().equals(runButton))
-                System.out.println("run");
-            else if (e.getSource().equals(runNextButton))
-                System.out.println("run next");
+            if (e.getSource().equals(resetButton)) System.out.println("reset");
+            else if (e.getSource().equals(uploadButton)) upload();
+            else if (e.getSource().equals(runButton)) System.out.println("run");
+            else if (e.getSource().equals(nextStepButton)) nextStep();
         }
 
         private void upload() {
@@ -211,6 +210,14 @@ public class MainWindow {
             refreshMemoryTableData();
         }
 
+        private void nextStep() {
+            simulator.runNextInstruction();
+            consoleArea.setText(simulator.getConsoleMessage());
+            refreshRegisterValues();
+            refreshMemoryTableData();
+            if (simulator.getMicroprocessor().isStopped())
+                nextStepButton.setEnabled(false);
+        }
 
     }
 
