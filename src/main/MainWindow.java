@@ -100,13 +100,13 @@ public class MainWindow {
                     private String[][] createMemoryTableData() {
                         memoryTableData = new String[4096][2];
                         for (int i = 0; i < memoryTableData.length; i++)
-                            memoryTableData[i][0] = String.format("%03x", i).toUpperCase();
+                            memoryTableData[i][0] = String.format("%03X", i);
                         return memoryTableData;
                     }
 
                     private void refreshMemoryTableData() {
                         for (int i = 0; i < memoryTableData.length; i++)
-                            memoryTableData[i][1] = String.format("%04x", simulator.getMemory().read(i)).toUpperCase();
+                            memoryTableData[i][1] = String.format("%04X", simulator.getMemory().read(i) & 0xFFFF);
                         memoryTable.repaint();
                     }
 
@@ -154,7 +154,7 @@ public class MainWindow {
                     int[] simulatorRegisterValues = (simulator == null)?
                             new int[6] : simulator.getMicroprocessor().getRegisterValues();
                     for (int i = 0; i < registerValues.length; i++)
-                        registerValues[i].setText(String.format("%04x", simulatorRegisterValues[i]).toUpperCase());
+                        registerValues[i].setText(String.format("%04X", simulatorRegisterValues[i] & 0xFFFF));
                 }
 
             private JPanel createOptionPanel() {
