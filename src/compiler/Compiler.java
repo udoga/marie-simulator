@@ -118,6 +118,7 @@ public class Compiler {
             }
 
     public String[][] getLabelTableData(String[][] labelTableData) {
+        labelTableData = clearLabelTableData(labelTableData);
         String[] labels = new String[labelAddressTable.size()];
         labels = labelAddressTable.keySet().toArray(labels);
         for (int i = 0; i < labels.length; i++) {
@@ -126,6 +127,14 @@ public class Compiler {
         }
         return labelTableData;
     }
+
+        private String[][] clearLabelTableData(String[][] labelTableData) {
+            for (int i = 0; i < labelTableData.length; i++) {
+                labelTableData[i][0] = null;
+                labelTableData[i][1] = null;
+            }
+            return labelTableData;
+        }
 
     public String getWarningMessage() {
         return warningMessage;
