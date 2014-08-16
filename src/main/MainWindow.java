@@ -60,14 +60,14 @@ public class MainWindow {
 
         private JPanel createRoot() {
             JPanel root = new JPanel(new MigLayout("wrap 3", "[grow][grow][]", "[grow][]"));
-            root.add(createTextAreaScrollPanel(), "span 2, wmin 300, hmin 100, grow");
+            root.add(createSourceCodeAreaScrollPanel(), "span 2, wmin 300, hmin 100, grow");
             root.add(createTablePanel(), "spany, width 120:200:, grow");
             root.add(createRegisterPanel(), "grow");
             root.add(createOptionPanel(), "grow");
             return root;
         }
 
-            private JScrollPane createTextAreaScrollPanel() {
+            private JScrollPane createSourceCodeAreaScrollPanel() {
                 Font font = new Font(Font.MONOSPACED, Font.PLAIN, 12);
                 sourceCodeArea = new JTextArea();
                 sourceCodeArea.setFont(font);

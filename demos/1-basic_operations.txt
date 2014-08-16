@@ -1,0 +1,12 @@
+	ORG 100
+	Load X
+	Add Y
+	Subt Z
+	Store RESULT
+	Output
+	Halt
+
+X,	Dec 10
+Y,	Dec 20
+Z,	Dec 5
+RESULT, Dec 0	/ RESULT = X + Y - Z

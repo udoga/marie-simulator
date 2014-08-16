@@ -1,0 +1,27 @@
+/ Multiplies X and Y.
+
+	ORG 100
+	Load Y
+	Store CTR
+
+LOOP,	Load CTR
+	Skipcond 800
+	Jump EXT
+	Load SUM
+	Add X
+	Store SUM
+	Load CTR
+	Subt ONE
+	Store CTR
+	Jump LOOP
+
+EXT,	Load SUM
+	Output
+	Halt
+
+X,	Dec 17
+Y,	Dec 12
+SUM,	Dec 0
+CTR, 	Dec 0
+ONE,	Dec 1
+	END

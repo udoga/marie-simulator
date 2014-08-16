@@ -1,0 +1,20 @@
+/ Multiplies input value by 8.
+
+	ORG 100
+	Input
+	Store X
+	Jns DOUBLE
+	Jns DOUBLE
+	Jns DOUBLE
+	Load X
+	Output
+	Halt
+
+DOUBLE,	Dec 0
+	Load X
+	Add X
+	Store X
+	JumpI DOUBLE
+
+X,	Dec 0
+	END

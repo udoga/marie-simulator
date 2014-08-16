@@ -127,7 +127,7 @@ public class Compiler {
         labels = labelAddressTable.keySet().toArray(labels);
         for (int i = 0; i < labels.length; i++) {
             labelTableData[i][0] = labels[i];
-            labelTableData[i][1] = String.format("%03x", labelAddressTable.get(labels[i]));
+            labelTableData[i][1] = String.format("%03X", labelAddressTable.get(labels[i]));
         }
         return labelTableData;
     }

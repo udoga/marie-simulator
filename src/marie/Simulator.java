@@ -50,10 +50,10 @@ public class Simulator {
         }
 
     public void run() {
-        int i;
-        for (i = 0; !microprocessor.isStopped() && i < 1000; i++)
+        int i, limit = 100000;
+        for (i = 0; !microprocessor.isStopped() && i < limit; i++)
             microprocessor.runNextInstruction();
-        if (i == 1000)
+        if (i == limit)
             addMessage("execution stopped: instruction run limit reached, check your program includes 'halt' command");
     }
 
