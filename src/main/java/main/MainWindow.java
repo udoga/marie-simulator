@@ -8,7 +8,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-import com.sun.java.swing.plaf.gtk.GTKLookAndFeel;
+//import com.sun.java.swing.plaf.gtk.GTKLookAndFeel;
 
 public class MainWindow {
 
@@ -49,10 +49,8 @@ public class MainWindow {
 
         private void setLookAndFeel() {
             try {
-                String systemsLookAndFeel = UIManager.getSystemLookAndFeelClassName();
-                if (!systemsLookAndFeel.equals("javax.swing.plaf.metal.MetalLookAndFeel"))
-                    UIManager.setLookAndFeel(systemsLookAndFeel);
-                else UIManager.setLookAndFeel(new GTKLookAndFeel());
+                UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+//                UIManager.setLookAndFeel(new GTKLookAndFeel());
             } catch (Exception e) {
                 e.printStackTrace();
             }

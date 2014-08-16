@@ -19,19 +19,6 @@ repositories {
 	mavenCentral()
 }
 
-sourceSets {
-    main {
-        java {
-            srcDir 'src'
-        }
-    }
-    test {
-        java {
-            srcDir 'test'
-        }
-    }
-}
-
 test {
     testLogging.showStandardStreams=true
     workingDir "${rootProject.projectDir}"
