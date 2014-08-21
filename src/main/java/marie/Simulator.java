@@ -63,17 +63,20 @@ public class Simulator {
 
     public void reset() {
         memory.reset();
-        compiler.resetProperties();
+        compiler.reset();
         microprocessor.reset();
         clearConsoleMessage();
     }
 
     public void setInputDevice(String value) {
-        String inputRegex = "[0-9a-fA-F]{1,4}";
-        if (value.matches(inputRegex))
+        if (isValidInput(value))
             microprocessor.setInput(Integer.parseInt(value, 16));
         else addMessage("invalid input device value");
     }
+
+        private boolean isValidInput(String inputValue) {
+            return inputValue.matches("[0-9a-fA-F]{1,4}");
+        }
 
     public Memory getMemory() {
         return memory;
@@ -86,7 +89,6 @@ public class Simulator {
     public Microprocessor getMicroprocessor() {
         return microprocessor;
     }
-
 
     public String getConsoleMessage() {
         return consoleMessage;

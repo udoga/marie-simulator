@@ -1,14 +1,12 @@
 package main;
 
-import javax.swing.*;
-
 import marie.Simulator;
+
+import javax.swing.*;
 import net.miginfocom.swing.MigLayout;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-
-//import com.sun.java.swing.plaf.gtk.GTKLookAndFeel;
 
 public class MainWindow {
 
@@ -50,7 +48,7 @@ public class MainWindow {
         private void setLookAndFeel() {
             try {
                 UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-//                UIManager.setLookAndFeel(new GTKLookAndFeel());
+                // UIManager.setLookAndFeel(new GTKLookAndFeel());
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -131,7 +129,7 @@ public class MainWindow {
                 JPanel registerPanel = new JPanel(new MigLayout("flowy, wrap 7"));
                 addRegisterLabels(registerPanel);
                 addRegisterValues(registerPanel);
-                refreshRegisterValues();
+                if (simulator != null) refreshRegisterValues();
                 return registerPanel;
             }
 
@@ -144,15 +142,14 @@ public class MainWindow {
                 private void addRegisterValues(JPanel registerPanel) {
                     inputField = new JTextField(4);
                     for (int i = 0; i < registerValues.length; i++) {
-                        registerValues[i] = new JLabel("");
+                        registerValues[i] = new JLabel("0000");
                         registerPanel.add(registerValues[i], "gapleft 10");
                     }
                     registerPanel.add(inputField, "gapleft 10");
                 }
 
                 private void refreshRegisterValues() {
-                    int[] simulatorRegisterValues = (simulator == null)?
-                            new int[7] : simulator.getMicroprocessor().getRegisterValues();
+                    int[] simulatorRegisterValues = simulator.getMicroprocessor().getRegisterValues();
                     for (int i = 0; i < registerValues.length; i++)
                         registerValues[i].setText(String.format("%04X", simulatorRegisterValues[i] & 0xFFFF));
                     inputField.setText(String.format("%04X", simulatorRegisterValues[6] & 0xFFFF));
@@ -174,10 +171,10 @@ public class MainWindow {
                     uploadButton = new JButton("Upload");
                     runButton = new JButton("Run");
                     nextStepButton = new JButton("Next Step");
-                    if (simulator != null) setButtonEnables();
+                    if (simulator != null) setButtonsEnabled();
                 }
 
-                    private void setButtonEnables() {
+                    private void setButtonsEnabled() {
                         boolean microprocessorStopped = simulator.getMicroprocessor().isStopped();
                         runButton.setEnabled(!microprocessorStopped);
                         nextStepButton.setEnabled(!microprocessorStopped);
@@ -222,7 +219,7 @@ public class MainWindow {
             refreshLabelTableData();
             refreshRegisterValues();
             refreshMemoryTableData();
-            setButtonEnables();
+            setButtonsEnabled();
         }
 
     }

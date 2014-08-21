@@ -10,19 +10,19 @@ public class Compiler {
     private String errorMessage;
     private String warningMessage;
 
-    private HashMap<String, Integer> labelAddressTable;
+    private HashMap<String, Integer> labelAddressTable = new HashMap<String, Integer>();
 
     public int[][] compile(String sourceCode) {
-        resetProperties();
+        reset();
         generateInstructions(sourceCode);
         processAddressAssignments();
         return generateObjectCode();
     }
 
-    public void resetProperties() {
+    public void reset() {
         errorMessage = null;
         warningMessage = null;
-        labelAddressTable = new HashMap<String, Integer>();
+        labelAddressTable.clear();
     }
 
     private void generateInstructions(String sourceCode) {
