@@ -129,4 +129,16 @@ public class InstructionTest {
         instruction = new Instruction("Skipcond", "X");
     }
 
+    @Test
+    public void testAccepts_indirectLoadStoreInstructions() throws Exception {
+        instruction = new Instruction("LoadI", "100");
+        assertEquals("Instruction(Symbol: loadi, Address: 100)", instruction.toString());
+        assertEquals(0xD100, instruction.convertToHexCode());
+
+        HashMap<String, Integer> labelAddressTable = createLabelAddressTable();
+        instruction = new Instruction("StoreI", "Y");
+        instruction.findAddressFromTable(labelAddressTable);
+        assertEquals("Instruction(Symbol: storei, Address: 200, Address Label: Y)", instruction.toString());
+        assertEquals(0xE200, instruction.convertToHexCode());
+    }
 }

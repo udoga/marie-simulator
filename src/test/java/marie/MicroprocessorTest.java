@@ -55,6 +55,15 @@ public class MicroprocessorTest {
         runNextAndExpectRegisterValues(0x0001, 0x0000, 0x0000, 0x5000, 0x0101, 0x0000, 0x0001);
     }
 
+    @Test
+    public void testRuns_indirectLoadStoreInstructions() throws Exception {
+        uploadProgramThree(memory);
+        microprocessor.start(0x100);
+        runNextAndExpectRegisterValues(0x1234, 0x0005, 0x1234, 0xD103, 0x0101, 0x0000, 0x0000);
+        microprocessor.runNextInstruction();
+        assertEquals(0x1234, memory.read(0x006));
+    }
+
     private void runNextAndExpectRegisterValues(int... expectedRegisterValues) {
         microprocessor.runNextInstruction();
         assertArrayEquals(expectedRegisterValues, microprocessor.getRegisterValues());
@@ -77,6 +86,15 @@ public class MicroprocessorTest {
                 0x110B, 0x7000, 0x0000, 0xB10B, 0xC108, 0x010C, 0x0001};
         for (int i = 0; i < hexCodes.length; i++)
             memory.write(originAddress+i, hexCodes[i]);
+    }
+
+    private void uploadProgramThree(Memory memory) {
+    /*  ORG 100 / LoadI X / StoreI Y / Halt / X, Dec 5 / Y, Dec 6 */
+        int originAddress = 0x100;
+        int[] hexCodes = {0xD103, 0xE104, 0x7000, 0x0005, 0x0006};
+        for (int i = 0; i < hexCodes.length; i++)
+            memory.write(originAddress+i, hexCodes[i]);
+        memory.write(0x5, 0x1234);
     }
 
 }

@@ -62,6 +62,8 @@ public class Microprocessor {
             case 0xA: clear(); break;
             case 0xB: addi(); break;
             case 0xC: jumpi(); break;
+            case 0xD: loadi(); break;
+            case 0xE: storei(); break;
         }
     }
 
@@ -125,6 +127,17 @@ public class Microprocessor {
 
     private void jumpi() {
         PC = MBR;
+    }
+
+    private void loadi() {
+        MAR = MBR;
+        MBR = memory.read(MAR);
+        AC = AC + MBR;
+    }
+
+    private void storei() {
+        MAR = MBR;
+        memory.write(MAR, AC);
     }
 
     public int[] getRegisterValues() {

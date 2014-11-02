@@ -5,7 +5,8 @@ import java.util.HashMap;
 
 public class Instruction {
 
-    private static final String mriSymbolRegex = "(jns)|(load)|(store)|(add)|(subt)|(jump)|(addi)|(jumpi)";
+    private static final String mriSymbolRegex = "(jns)|(load)|(store)|(add)|(subt)|(jump)|" +
+            "(addi)|(jumpi)|(loadi)|(storei)";
     private static final String rriSymbolRegex = "(input)|(output)|(halt)|(skipcond)|(clear)";
     private static final String dataSymbolRegex = "(hex)|(dec)";
     private static final String pseudoSymbolRegex = "(org)|(end)";
@@ -18,8 +19,8 @@ public class Instruction {
     private static final String hexDataRegex = "[a-fA-F0-9]+";
     private static final String decDataRegex = "\\d+";
 
-    private static final String[] symbols = {"jns", "load", "store", "add", "subt",
-            "input", "output", "halt", "skipcond", "jump", "clear", "addi", "jumpi"};
+    private static final String[] symbols = {"jns", "load", "store", "add", "subt", "input", "output",
+            "halt", "skipcond", "jump", "clear", "addi", "jumpi", "loadi", "storei"};
 
     private String[] instructionTokens;
 
