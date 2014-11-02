@@ -52,13 +52,17 @@ public class Simulator {
     public void run() {
         int i, limit = 100000;
         for (i = 0; !microprocessor.isStopped() && i < limit; i++)
-            microprocessor.runNextInstruction();
+            runNextInstruction();
         if (i == limit)
             addMessage("execution stopped: instruction run limit reached, check your program includes 'halt' command");
     }
 
     public void runNextInstruction() {
-        microprocessor.runNextInstruction();
+        try {
+            microprocessor.runNextInstruction();
+        } catch (Memory.InvalidAddress e) {
+            addMessage("runtime error: instructions indirect address is invalid");
+        }
     }
 
     public void reset() {
