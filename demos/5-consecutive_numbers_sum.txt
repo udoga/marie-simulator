@@ -1,0 +1,24 @@
+/ n = input number
+/ Calculates 1 + 2 + 3 + ... + n.
+
+	ORG 100
+	Input
+	Store CNTR
+	
+LOOP,	Load SUM
+	Add CNTR
+	Store SUM
+	Load CNTR
+	Subt ONE
+	Store CNTR
+	Skipcond 400
+	Jump LOOP
+
+	Load SUM
+	Output
+	Halt
+
+CNTR,	Dec 0
+SUM,	Dec 0
+ONE,	Dec 1
+	END

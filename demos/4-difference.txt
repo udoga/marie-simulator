@@ -1,0 +1,23 @@
+/ Finds difference between X and Y.
+
+	ORG 100
+	Load X
+	Subt Y
+	Store RESULT
+
+	Skipcond 800
+	Jns ABS
+	Load RESULT
+	Output
+	Halt
+
+ABS,	Dec 0
+	Clear
+	Subt RESULT
+	Store RESULT
+	JumpI ABS
+
+X,	Dec 23
+Y,	Dec 29
+RESULT,	Dec 0
+	END
