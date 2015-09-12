@@ -1,0 +1,22 @@
+/ Doubles numbers between 210-22F memory addresses.
+
+	ORG 100
+LOOP,	Jns DOUBLE
+	Load PTR
+	Add ONE
+	Store PTR
+	Subt LPTR
+	Skipcond 400
+	Jump LOOP
+	Halt
+
+DOUBLE,	Dec 0
+	LoadI PTR
+	AddI PTR
+	StoreI PTR
+	JumpI DOUBLE
+
+PTR,	Hex 210
+LPTR,	Hex 230
+ONE,	Dec 1
+	END

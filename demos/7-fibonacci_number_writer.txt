@@ -1,0 +1,35 @@
+/ Writes 50 fibonacci numbers starting from 0x4FF address.
+
+	ORG 100
+	Clear
+	StoreI PTR1
+	Jns NEXT
+	Load ONE
+	StoreI PTR1
+
+LOOP,	LoadI PTR0
+	AddI PTR1
+	StoreI PTR2
+	Jns NEXT
+	Load CTR
+	Subt ONE
+	Store CTR
+	Skipcond 400
+	Jump LOOP
+	Halt
+
+NEXT,	Dec 0
+	Load PTR0
+	Add ONE
+	Store PTR0
+	Add ONE
+	Store PTR1
+	Add ONE
+	Store PTR2
+	JumpI NEXT
+
+PTR0,	Hex 4FE
+PTR1,	Hex 4FF
+PTR2,	Hex 500
+ONE,	Dec 1
+CTR,	Dec 50

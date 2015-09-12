@@ -1,0 +1,40 @@
+/ Finds how many positive numbers, negative numbers, and zeros; between 350-36F memory addresses.
+/ Writes negative count to 00F, zero count to 010, positive count to 011.
+
+	ORG 100
+LOOP, 	Jns CHECK
+	Load PTR
+	Add ONE
+	Store PTR
+	SUBT LPTR
+	Skipcond 400
+	Jump LOOP
+	Halt
+
+CHECK,	Dec 0
+	LoadI PTR
+	Skipcond 400
+	Jump IfNonZ
+	Load ZEROS
+	Jump INCR
+IfNonZ,	Skipcond 800
+	Jump IfNeg
+	Load POSS
+	Jump INCR
+IfNeg,	Load NEGS
+
+INCR,	Store TMP
+	LoadI TMP
+	Add ONE
+	StoreI TMP
+	JumpI CHECK
+
+PTR,	Hex 350
+LPTR,	Hex 370
+ONE,	Dec 1
+
+NEGS,	Hex 00F
+ZEROS,	Hex 010
+POSS,	Hex 011
+TMP,	Hex 0
+	END

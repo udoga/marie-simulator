@@ -11,7 +11,7 @@ LOOP,	Load SUM
 	Load CNTR
 	Subt ONE
 	Store CNTR
-	Skipcond 400
+	Skipcond 000
 	Jump LOOP
 
 	Load SUM
