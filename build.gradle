@@ -15,12 +15,16 @@ dependencies {
 }
 
 repositories {
-	mavenCentral()
+    mavenCentral()
 }
 
 test {
     testLogging.showStandardStreams=true
     workingDir "${rootProject.projectDir}"
+
+    testLogging {
+        events "passed", "skipped", "failed"
+    }
 }
 
 task testJar(type: Jar) {
